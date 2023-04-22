@@ -40,7 +40,7 @@
             android:layout_centerInParent="true"
             android:layout_toStartOf="@id/btnSend"
             android:background="@drawable/rounded_corner"
-            android:hint="Write here "
+            android:hint="Write here ..."
             android:padding="16dp" />
 
         <com.google.android.material.imageview.ShapeableImageView
