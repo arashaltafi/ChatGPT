@@ -1,9 +1,24 @@
 package com.arash.altafi.chatgptsimple
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.res.ColorStateList
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkRequest
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.arash.altafi.chatgptsimple.databinding.ActivityMainBinding
+import com.arash.altafi.chatgptsimple.utils.NetworkUtils
+import com.arash.altafi.chatgptsimple.utils.toGone
+import com.arash.altafi.chatgptsimple.utils.toShow
+import com.arash.altafi.chatgptsimple.utils.toast
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -28,29 +43,70 @@ class MainActivity : AppCompatActivity() {
 
     private val json: MediaType = "application/json; charset=utf-8".toMediaType()
 
+    private var networkConnection: ((connected: Boolean) -> Unit)? = null
+
+    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
+        override fun onAvailable(network: Network) {
+            super.onAvailable(network)
+            networkConnection?.invoke(true)
+        }
+
+        override fun onLost(network: Network) {
+            super.onLost(network)
+            networkConnection?.invoke(false)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        registerNetworkConnectivity(this)
         init()
     }
 
     private fun init() = binding.apply {
+        //first time (before change network)
+        changeIconStatus(checkNetWork())
+
+        networkConnection = {
+            CoroutineScope(Dispatchers.Main).launch {
+                changeIconStatus(it)
+            }
+        }
+
         messageAdapter = MessageAdapter(messageList)
         rvChat.adapter = messageAdapter
         addToChat("Hi, How may I assist you today?", MessageState.BOT)
 
         btnSend.setOnClickListener {
-            val question = edtMessage.text.toString().trim()
-            edtMessage.setText("")
-            if (question.isEmpty()) {
-                toast("Please Write Your Question")
+            if (checkNetWork()) {
+                val question = edtMessage.text.toString().trim()
+                edtMessage.setText("")
+                if (question.isEmpty()) {
+                    toast("Please Write Your Question")
+                } else {
+                    addToChat(question, MessageState.ME)
+                    callAPI(question)
+                    tvWelcome.toGone()
+                }
             } else {
-                addToChat(question, MessageState.ME)
-                callAPI(question)
-                tvWelcome.toGone()
+                toast("Please Turn On Your Internet.")
             }
         }
+    }
+
+    private fun checkNetWork() = NetworkUtils.isConnected(this@MainActivity)
+
+    @SuppressLint("ResourceAsColor")
+    private fun changeIconStatus(isConnect: Boolean) {
+        val red =
+            ContextCompat.getColor(this, R.color.dark_red)
+        val green =
+            ContextCompat.getColor(this, R.color.green)
+        val color = if (isConnect) green else red
+        binding.ivStatus.setColorFilter(color)
+
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -67,10 +123,12 @@ class MainActivity : AppCompatActivity() {
         addToChat(response, MessageState.BOT)
         runOnUiThread {
             binding.tvToolbarState.toGone()
+            binding.btnSend.isClickable = true
         }
     }
 
     private fun callAPI(question: String?) {
+        binding.btnSend.isClickable = false
         messageList.add(Message("Typing... ", MessageState.TYPING))
         binding.tvToolbarState.toShow()
         val jsonBody = JSONObject()
@@ -87,13 +145,16 @@ class MainActivity : AppCompatActivity() {
         }
         val requestBody = jsonBody.toString().toRequestBody(json)
         val request: Request = Request.Builder()
-            .url("https://api.openai.com/v1/chat/completions")
-            .header("Authorization", "Bearer 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")
+            .url(BuildConfig.OPENAI_URL)
+            .header("Authorization", "Bearer ${BuildConfig.TOKEN}")
             .post(requestBody)
             .build()
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                addResponse("Failed to load response due to " + e.message)
+                CoroutineScope(Dispatchers.Main).launch {
+                    delay(500)
+                    addResponse("Failed to load response due to " + e.message)
+                }
             }
 
             override fun onResponse(call: Call, response: Response) {
@@ -110,10 +171,37 @@ class MainActivity : AppCompatActivity() {
                         e.printStackTrace()
                     }
                 } else {
-                    addResponse("Failed to load response due to " + response.body.toString())
+                    CoroutineScope(Dispatchers.Main).launch {
+                        delay(500)
+                        addResponse("Failed to load response due to " + response.body.toString())
+                    }
                 }
             }
         })
+    }
+
+    private fun registerNetworkConnectivity(context: Context) {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            connectivityManager.registerDefaultNetworkCallback(networkCallback)
+        } else {
+            val builder = NetworkRequest.Builder().build()
+            connectivityManager.registerNetworkCallback(builder, networkCallback)
+        }
+    }
+
+    private fun unregisterNetworkConnectivity(context: Context) {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        connectivityManager.unregisterNetworkCallback(networkCallback)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterNetworkConnectivity(this)
     }
 
 }

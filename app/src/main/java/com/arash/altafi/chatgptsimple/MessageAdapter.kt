@@ -4,6 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.arash.altafi.chatgptsimple.databinding.ChatItemBinding
+import com.arash.altafi.chatgptsimple.utils.toGone
+import com.arash.altafi.chatgptsimple.utils.toShow
 
 class MessageAdapter(private var messageList: ArrayList<Message>) :
     RecyclerView.Adapter<MessageAdapter.MyViewHolder>() {
@@ -13,16 +15,16 @@ class MessageAdapter(private var messageList: ArrayList<Message>) :
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val (message1, sentBy) = messageList[position]
-        holder.bind(message1, sentBy)
+        val item = messageList[position]
+        holder.bind(item)
     }
 
     override fun getItemCount(): Int = messageList.size
 
     inner class MyViewHolder(private val binding: ChatItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(message: String, sentBy: MessageState) = binding.apply {
-            when (sentBy) {
+        fun bind(item: Message) = binding.apply {
+            when (item.sentBy) {
                 MessageState.TYPING -> {
                     llRightChatView.toGone()
                     llLeftChatView.toShow()
@@ -32,13 +34,13 @@ class MessageAdapter(private var messageList: ArrayList<Message>) :
                     llLeftChatView.toGone()
                     llRightChatView.toShow()
                     progressTyping.toGone()
-                    tvRightChat.text = message
+                    tvRightChat.text = item.message
                 }
                 else -> {
                     llRightChatView.toGone()
                     llLeftChatView.toShow()
                     progressTyping.toGone()
-                    tvLeftChat.text = message
+                    tvLeftChat.text = item.message
                 }
             }
         }

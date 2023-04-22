@@ -13,8 +13,10 @@ android {
         targetSdk 33
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "OPENAI_URL", '"https://api.openai.com/v1/chat/completions"')
+        buildConfigField("String", "TOKEN", '"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"')
     }
 
     signingConfigs {
