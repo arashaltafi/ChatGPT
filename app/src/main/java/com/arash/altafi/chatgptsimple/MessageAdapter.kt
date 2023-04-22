@@ -1,10 +1,10 @@
-package com.example.easychatgpt
+package com.arash.altafi.chatgptsimple
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.easychatgpt.databinding.ChatItemBinding
+import com.arash.chatgptsimple.databinding.ChatItemBinding
 
 class MessageAdapter(private var messageList: ArrayList<Message>) :
     RecyclerView.Adapter<MessageAdapter.MyViewHolder>() {

@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.easychatgpt'
+    namespace 'com.arash.altafi.chatgptsimple'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.easychatgpt"
+        applicationId "com.arash.altafi.chatgptsimple"
         minSdk 21
         targetSdk 33
         versionCode 1

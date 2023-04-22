@@ -1,4 +1,4 @@
-package com.example.easychatgpt
+package com.arash.altafi.chatgptsimple
 
 enum class MessageState {
     ME,
