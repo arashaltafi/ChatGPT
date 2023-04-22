@@ -11,7 +11,7 @@
         android:layout_alignParentStart="true"
         android:layout_marginEnd="80dp"
         android:background="@drawable/rounded_corner"
-        android:backgroundTint="@color/blue"
+        android:backgroundTint="@color/green"
         android:padding="8dp">
 
         <com.google.android.material.textview.MaterialTextView
