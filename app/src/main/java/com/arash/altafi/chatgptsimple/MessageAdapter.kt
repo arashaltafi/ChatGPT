@@ -22,14 +22,24 @@ class MessageAdapter(private var messageList: ArrayList<Message>) :
     inner class MyViewHolder(private val binding: ChatItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(message: String, sentBy: MessageState) = binding.apply {
-            if (sentBy == MessageState.ME) {
-                llLeftChatView.toGone()
-                llRightChatView.toShow()
-                tvRightChat.text = message
-            } else {
-                llRightChatView.toGone()
-                llLeftChatView.toShow()
-                tvLeftChat.text = message
+            when (sentBy) {
+                MessageState.TYPING -> {
+                    llRightChatView.toGone()
+                    llLeftChatView.toShow()
+                    progressTyping.toShow()
+                }
+                MessageState.ME -> {
+                    llLeftChatView.toGone()
+                    llRightChatView.toShow()
+                    progressTyping.toGone()
+                    tvRightChat.text = message
+                }
+                else -> {
+                    llRightChatView.toGone()
+                    llLeftChatView.toShow()
+                    progressTyping.toGone()
+                    tvLeftChat.text = message
+                }
             }
         }
     }

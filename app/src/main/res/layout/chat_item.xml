@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="8dp">
@@ -20,6 +22,16 @@
             android:textColor="@color/white"
             android:textIsSelectable="true"
             android:textSize="18sp" />
+
+        <com.wang.avi.AVLoadingIndicatorView
+            android:id="@+id/progressTyping"
+            style="@style/AVLoadingIndicatorView.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:indicatorColor="@color/white"
+            app:indicatorName="BallPulseIndicator"
+            tools:visibility="visible" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

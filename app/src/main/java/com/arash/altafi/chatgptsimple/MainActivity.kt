@@ -38,6 +38,7 @@ class MainActivity : AppCompatActivity() {
     private fun init() = binding.apply {
         messageAdapter = MessageAdapter(messageList)
         rvChat.adapter = messageAdapter
+        addToChat("Hi, How may I assist you today?", MessageState.BOT)
 
         btnSend.setOnClickListener {
             val question = edtMessage.text.toString().trim()
@@ -70,7 +71,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun callAPI(question: String?) {
-        messageList.add(Message("Typing... ", MessageState.BOT))
+        messageList.add(Message("Typing... ", MessageState.TYPING))
         binding.tvToolbarState.toShow()
         val jsonBody = JSONObject()
         try {

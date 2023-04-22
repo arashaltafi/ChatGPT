@@ -51,4 +51,7 @@ dependencies {
     //OkHttp
     implementation "com.squareup.okhttp3:okhttp:5.0.0-alpha.3"
 
+    //Animation
+    implementation "com.wang.avi:library:2.1.3"
+
 }
