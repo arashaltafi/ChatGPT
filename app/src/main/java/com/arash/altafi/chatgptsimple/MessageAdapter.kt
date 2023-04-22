@@ -1,7 +1,6 @@
 package com.arash.altafi.chatgptsimple
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.arash.altafi.chatgptsimple.databinding.ChatItemBinding
@@ -22,15 +21,15 @@ class MessageAdapter(private var messageList: ArrayList<Message>) :
 
     inner class MyViewHolder(private val binding: ChatItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(message1: String, sentBy: MessageState) = binding.apply {
+        fun bind(message: String, sentBy: MessageState) = binding.apply {
             if (sentBy == MessageState.ME) {
-                llLeftChatView.visibility = View.GONE
-                llRightChatView.visibility = View.VISIBLE
-                tvRightChat.text = message1
+                llLeftChatView.toGone()
+                llRightChatView.toShow()
+                tvRightChat.text = message
             } else {
-                llRightChatView.visibility = View.GONE
-                llLeftChatView.visibility = View.VISIBLE
-                tvLeftChat.text = message1
+                llRightChatView.toGone()
+                llLeftChatView.toShow()
+                tvLeftChat.text = message
             }
         }
     }

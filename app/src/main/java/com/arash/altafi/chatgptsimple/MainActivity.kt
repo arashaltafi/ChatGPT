@@ -2,8 +2,6 @@ package com.arash.altafi.chatgptsimple
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.arash.altafi.chatgptsimple.databinding.ActivityMainBinding
 import okhttp3.*
@@ -45,12 +43,11 @@ class MainActivity : AppCompatActivity() {
             val question = edtMessage.text.toString().trim()
             edtMessage.setText("")
             if (question.isEmpty()) {
-                Toast.makeText(this@MainActivity, "Please Write Your Question", Toast.LENGTH_SHORT)
-                    .show()
+                toast("Please Write Your Question")
             } else {
                 addToChat(question, MessageState.ME)
                 callAPI(question)
-                tvWelcome.visibility = View.GONE
+                tvWelcome.toGone()
             }
         }
     }
@@ -67,10 +64,14 @@ class MainActivity : AppCompatActivity() {
     private fun addResponse(response: String) {
         messageList.removeAt(messageList.size - 1)
         addToChat(response, MessageState.BOT)
+        runOnUiThread {
+            binding.tvToolbarState.toGone()
+        }
     }
 
     private fun callAPI(question: String?) {
         messageList.add(Message("Typing... ", MessageState.BOT))
+        binding.tvToolbarState.toShow()
         val jsonBody = JSONObject()
         try {
             jsonBody.put("model", "gpt-3.5-turbo")
