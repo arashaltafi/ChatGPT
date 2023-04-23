@@ -12,6 +12,9 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+
+        <item name="colorBackGround_Second">@color/grey_100</item>
+
     </style>
 
     <style name="appearance.round.50" parent="ShapeAppearance.MaterialComponents.SmallComponent">

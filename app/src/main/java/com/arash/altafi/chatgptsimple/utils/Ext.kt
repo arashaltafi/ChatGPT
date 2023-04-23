@@ -1,7 +1,9 @@
 package com.arash.altafi.chatgptsimple.utils
 
 import android.annotation.TargetApi
+import android.app.Activity
 import android.content.Context
+import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Build
 import android.util.DisplayMetrics
@@ -125,4 +127,9 @@ fun View.showKeyboard() {
     } catch (e: java.lang.Exception) {
         Log.e("showKeyboard", "showKeyboard failed, error: $e")
     }
+}
+
+fun Activity.isDarkTheme(): Boolean {
+    return this.resources.configuration.uiMode and
+            Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
 }

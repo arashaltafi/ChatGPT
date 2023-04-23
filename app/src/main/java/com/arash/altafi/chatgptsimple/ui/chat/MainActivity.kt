@@ -80,6 +80,13 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        val background = if (isDarkTheme()) {
+            ContextCompat.getDrawable(this@MainActivity, R.drawable.chat_bg_dark)
+        } else {
+            ContextCompat.getDrawable(this@MainActivity, R.drawable.chat_bg_light)
+        }
+        rlRoot.background = background
+
         messageAdapter = MessageAdapter(messageList)
         rvChat.adapter = messageAdapter
         addToChat("Hi, How may I assist you today?", MessageState.BOT)

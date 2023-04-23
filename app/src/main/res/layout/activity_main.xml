@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,7 +13,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:theme="@style/Theme.ChatGPTSimple"
-        app:elevation="8dp">
+        app:elevation="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
@@ -96,53 +99,64 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvChat"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/bottom_layout"
-        android:layout_below="@+id/appBarLayout"
-        android:orientation="vertical"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:stackFromEnd="true"
-        tools:itemCount="5"
-        tools:listitem="@layout/chat_item" />
-
     <RelativeLayout
-        android:id="@+id/bottom_layout"
+        android:id="@+id/rlRoot"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/grey_100"
-        android:padding="8dp">
+        android:layout_height="0dp"
+        android:layout_below="@+id/appBarLayout"
+        android:background="@drawable/chat_bg_light"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edtMessage"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvChat"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/rlBottom"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:stackFromEnd="true"
+            tools:itemCount="5"
+            tools:listitem="@layout/chat_item" />
+
+        <RelativeLayout
+            android:id="@+id/rlBottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_toStartOf="@id/btnSend"
-            android:background="@drawable/rounded_corner"
-            android:hint="Write here ..."
-            android:imeOptions="actionSend"
-            android:inputType="textMultiLine|text"
-            android:maxLength="150"
-            android:maxLines="5"
-            android:minLines="1"
-            android:padding="16dp"
-            android:scrollbarAlwaysDrawVerticalTrack="true" />
+            android:layout_alignParentBottom="true"
+            android:padding="8dp">
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/btnSend"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerInParent="true"
-            android:layout_marginStart="10dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="8dp"
-            android:src="@drawable/ic_baseline_send_24" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_toStartOf="@id/btnSend"
+                android:background="@drawable/rounded_corner"
+                android:hint="Write here ..."
+                android:imeOptions="actionSend"
+                android:inputType="textMultiLine|text"
+                android:maxLength="150"
+                android:maxLines="5"
+                android:minLines="1"
+                android:padding="16dp"
+                android:scrollbarAlwaysDrawVerticalTrack="true" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/btnSend"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="10dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="8dp"
+                android:src="@drawable/ic_baseline_send_24" />
+
+        </RelativeLayout>
 
     </RelativeLayout>
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
