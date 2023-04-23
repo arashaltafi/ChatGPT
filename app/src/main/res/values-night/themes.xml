@@ -14,6 +14,7 @@
         <!-- Customize your theme here. -->
 
         <item name="colorBackGround_Second">@color/grey_900</item>
+        <item name="background_icon">@color/white</item>
 
     </style>
 
