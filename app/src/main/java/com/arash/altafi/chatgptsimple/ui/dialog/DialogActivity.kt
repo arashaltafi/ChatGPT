@@ -8,14 +8,16 @@ import android.net.NetworkRequest
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Gravity
+import android.view.View
 import com.arash.altafi.chatgptsimple.R
+import com.arash.altafi.chatgptsimple.data.local.DialogEntity
 import com.arash.altafi.chatgptsimple.data.local.MessengerDao
 import com.arash.altafi.chatgptsimple.data.local.MessengerDatabase
 import com.arash.altafi.chatgptsimple.databinding.ActivityDialogBinding
 import com.arash.altafi.chatgptsimple.ui.chat.ChatActivity
-import com.arash.altafi.chatgptsimple.utils.NetworkUtils
-import com.arash.altafi.chatgptsimple.utils.toGone
-import com.arash.altafi.chatgptsimple.utils.toShow
+import com.arash.altafi.chatgptsimple.ui.image.ImageSearchActivity
+import com.arash.altafi.chatgptsimple.utils.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -65,8 +67,31 @@ class DialogActivity : AppCompatActivity() {
         }
 
         flNewChat.setOnClickListener {
-            startActivity(Intent(this@DialogActivity, ChatActivity::class.java))
+            val intent = Intent(this@DialogActivity, ChatActivity::class.java).apply {
+                putExtra("DialogId", "-1")
+            }
+            startActivity(intent)
         }
+
+        ivMore.setOnClickListener {
+            popupWindow(it)
+        }
+    }
+
+    private fun popupWindow(view: View) {
+        PopupUtil.showPopup(
+            view,
+            listOf(
+                PopupUtil.PopupItem(
+                    R.drawable.ic_baseline_image_search_24,
+                    getString(R.string.gpt_image)
+                ) {
+                    startActivity(Intent(this, ImageSearchActivity::class.java))
+                }
+            ),
+            Gravity.BOTTOM.or(Gravity.END),
+            setTint = false
+        )
     }
 
     private fun handleList() = binding.apply {
@@ -78,6 +103,35 @@ class DialogActivity : AppCompatActivity() {
             dialogAdapter = DialogAdapter(ArrayList(dialogListEntity!!))
             rvDialogs.adapter = dialogAdapter
         }
+
+        dialogAdapter?.onClickListener = {
+            val intent = Intent(this@DialogActivity, ChatActivity::class.java).apply {
+                putExtra("DialogId", it.id)
+            }
+            startActivity(intent)
+        }
+
+        dialogAdapter?.onLongClickListener = { view, dialogModel ->
+            popupWindowAdapter(view, dialogModel)
+        }
+    }
+
+    private fun popupWindowAdapter(view: View, dialogModel: DialogEntity) {
+        PopupUtil.showPopup(
+            view,
+            listOf(
+                PopupUtil.PopupItem(
+                    R.drawable.ic_baseline_delete_24,
+                    getString(R.string.delete)
+                ) {
+                    messengerDao?.deleteDialog(dialogModel)
+                    handleList()
+                    toast("SuccessFully Deleted")
+                }
+            ),
+            Gravity.BOTTOM.or(Gravity.END),
+            setTint = false
+        )
     }
 
     private fun checkNetWork() = NetworkUtils.isConnected(this@DialogActivity)

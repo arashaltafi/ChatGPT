@@ -2,4 +2,6 @@
     <string name="app_name">ChatGPT Simple</string>
     <string name="connecting">Connecting …</string>
     <string name="gpt_image">GPT Image</string>
+    <string name="delete">Delete Dialog</string>
+    <string name="back">Back</string>
 </resources>

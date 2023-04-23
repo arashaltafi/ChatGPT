@@ -2,7 +2,6 @@ package com.arash.altafi.chatgptsimple.ui.chat
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
@@ -21,7 +20,6 @@ import com.arash.altafi.chatgptsimple.data.local.MessengerDatabase
 import com.arash.altafi.chatgptsimple.databinding.ActivityChatBinding
 import com.arash.altafi.chatgptsimple.data.model.Message
 import com.arash.altafi.chatgptsimple.data.model.MessageState
-import com.arash.altafi.chatgptsimple.ui.image.ImageSearchActivity
 import com.arash.altafi.chatgptsimple.utils.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -44,6 +42,7 @@ class ChatActivity : AppCompatActivity() {
 
     private var messengerDatabase: MessengerDatabase? = null
     private var messengerDao: MessengerDao? = null
+    private var dialogId: Long = -1L
 
     private var messageList: ArrayList<Message> = arrayListOf()
     private lateinit var messageAdapter: MessageAdapter
@@ -80,11 +79,17 @@ class ChatActivity : AppCompatActivity() {
     private fun init() = binding.apply {
         messengerDatabase = MessengerDatabase.getAppDataBase(this@ChatActivity)
         messengerDao = messengerDatabase?.MessengerDao()
-        val dialogEntity = DialogEntity()
-        dialogEntity.id = getLastIdOfDB() + 1
-        dialogEntity.message = welcomeMessage
-        dialogEntity.messageCount = 1
-        messengerDao?.insertDialog(dialogEntity)
+
+        dialogId = intent.getLongExtra("DialogId", -1)
+        if (dialogId != -1L) {
+            messengerDao?.getDialogById(dialogId)
+        } else {
+            val dialogEntity = DialogEntity()
+            dialogEntity.id = getLastIdOfDB() + 1
+            dialogEntity.message = welcomeMessage
+            dialogEntity.messageCount = 1
+            messengerDao?.insertDialog(dialogEntity)
+        }
 
         //first time (before change network)
         changeIconStatus(checkNetWork())
@@ -139,16 +144,30 @@ class ChatActivity : AppCompatActivity() {
     private fun getLastIdOfDB() = (messengerDao?.getLastDialogId() ?: 1)
 
     private fun popupWindow(view: View) {
+        val list = mutableListOf(
+            PopupUtil.PopupItem(
+                R.drawable.ic_baseline_arrow_back_24,
+                getString(R.string.back)
+            ) {
+                finish()
+            },
+        )
+
+        if (dialogId != -1L) {
+            list.add(
+                PopupUtil.PopupItem(
+                    R.drawable.ic_baseline_delete_24,
+                    getString(R.string.delete)
+                ) {
+                    messengerDao?.deleteDialogById(dialogId)
+                    finish()
+                }
+            )
+        }
+
         PopupUtil.showPopup(
             view,
-            listOf(
-                PopupUtil.PopupItem(
-                    R.drawable.ic_baseline_image_search_24,
-                    getString(R.string.gpt_image)
-                ) {
-                    startActivity(Intent(this, ImageSearchActivity::class.java))
-                }
-            ),
+            list,
             Gravity.BOTTOM.or(Gravity.END),
             setTint = false
         )
@@ -177,7 +196,7 @@ class ChatActivity : AppCompatActivity() {
                 val dialogEntity = DialogEntity()
                 dialogEntity.id = getLastIdOfDB()
                 dialogEntity.message = message
-                dialogEntity.messageCount = (messengerDao?.getAllDialog()?.size ?: 0) + 1
+                dialogEntity.messageCount = (messengerDao?.getAllDialog()?.size ?: 0) + 1 //fixme
                 messengerDao?.updateDialog(dialogEntity)
             }
         }
