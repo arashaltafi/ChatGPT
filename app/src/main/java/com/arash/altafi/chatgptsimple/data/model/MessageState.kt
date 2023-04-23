@@ -1,4 +1,4 @@
-package com.arash.altafi.chatgptsimple.model
+package com.arash.altafi.chatgptsimple.data.model
 
 enum class MessageState {
     ME,

@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.arash.altafi.chatgptsimple.databinding.ChatItemBinding
-import com.arash.altafi.chatgptsimple.model.Message
-import com.arash.altafi.chatgptsimple.model.MessageState
+import com.arash.altafi.chatgptsimple.data.model.Message
+import com.arash.altafi.chatgptsimple.data.model.MessageState
 import com.arash.altafi.chatgptsimple.utils.toGone
 import com.arash.altafi.chatgptsimple.utils.toShow
 

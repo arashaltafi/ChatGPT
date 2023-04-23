@@ -29,69 +29,16 @@
                 android:layout_height="match_parent"
                 android:padding="4dp">
 
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/ivAvatar"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:padding="2dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintDimensionRatio="1:1"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:shapeAppearance="@style/appearance.round.50"
-                    app:srcCompat="@drawable/robot"
-                    app:strokeColor="@color/red"
-                    app:strokeWidth="1dp" />
-
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/ivStatus"
-                    android:layout_width="8dp"
-                    android:layout_height="8dp"
-                    android:layout_margin="4dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/ivAvatar"
-                    app:shapeAppearance="@style/appearance.round.50"
-                    app:srcCompat="@drawable/background_status" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tvToolbarTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:text="@string/app_name"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toEndOf="@+id/ivAvatar"
-                    app:layout_constraintTop_toTopOf="parent" />
-
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tvToolbarState"
+                    style="@style/txt.h1.medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:text="Typing..."
+                    android:text="Connecting ..."
                     android:textColor="@color/white"
-                    android:textSize="12sp"
-                    android:textStyle="italic"
-                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/ivAvatar"
-                    app:layout_constraintTop_toBottomOf="@+id/tvToolbarTitle"
-                    tools:visibility="visible" />
-
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/ivMore"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="4dp"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:clickable="true"
-                    android:focusable="true"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_baseline_more_vert_24" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -115,6 +62,20 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:itemCount="5"
             tools:listitem="@layout/dialog_item" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottieEmpty"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:lottie_autoPlay="true"
+            app:lottie_cacheComposition="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/lottie_robot_thinking"
+            app:lottie_renderMode="automatic"
+            app:lottie_repeatMode="restart"
+            tools:visibility="visible" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/flNewChat"

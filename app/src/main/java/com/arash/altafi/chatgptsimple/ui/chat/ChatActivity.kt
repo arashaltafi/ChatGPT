@@ -16,8 +16,8 @@ import androidx.core.content.ContextCompat
 import com.arash.altafi.chatgptsimple.BuildConfig
 import com.arash.altafi.chatgptsimple.R
 import com.arash.altafi.chatgptsimple.databinding.ActivityChatBinding
-import com.arash.altafi.chatgptsimple.model.Message
-import com.arash.altafi.chatgptsimple.model.MessageState
+import com.arash.altafi.chatgptsimple.data.model.Message
+import com.arash.altafi.chatgptsimple.data.model.MessageState
 import com.arash.altafi.chatgptsimple.ui.image.ImageSearchActivity
 import com.arash.altafi.chatgptsimple.utils.*
 import kotlinx.coroutines.CoroutineScope
