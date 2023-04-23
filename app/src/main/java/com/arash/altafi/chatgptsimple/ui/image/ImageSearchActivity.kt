@@ -8,34 +8,28 @@ import android.net.NetworkRequest
 import android.os.Build
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.arash.altafi.chatgptsimple.BuildConfig
 import com.arash.altafi.chatgptsimple.R
 import com.arash.altafi.chatgptsimple.databinding.ActivityImageSearchBinding
+import com.arash.altafi.chatgptsimple.ext.*
 import com.arash.altafi.chatgptsimple.utils.*
 import com.bumptech.glide.Glide
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import okhttp3.*
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.toRequestBody
-import org.json.JSONObject
-import java.io.IOException
-import java.util.concurrent.TimeUnit
 
+@AndroidEntryPoint
 class ImageSearchActivity : AppCompatActivity() {
 
     private val binding by lazy {
         ActivityImageSearchBinding.inflate(layoutInflater)
     }
 
-    private var client: OkHttpClient = OkHttpClient.Builder()
-        .readTimeout(60, TimeUnit.SECONDS)
-        .build()
-
-    private val json: MediaType = "application/json; charset=utf-8".toMediaType()
+    private val viewModel: ImageViewModel by viewModels()
 
     private var networkConnection: ((connected: Boolean) -> Unit)? = null
 
@@ -104,62 +98,28 @@ class ImageSearchActivity : AppCompatActivity() {
 
     private fun callAPI(text: String) {
         setInProgress(true)
-        val jsonBody = JSONObject()
-        try {
-            jsonBody.put("prompt", text)
-            jsonBody.put("size", "256x256")
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        val requestBody = jsonBody.toString().toRequestBody(json)
-        val request: Request = Request.Builder()
-            .url(BuildConfig.OPENAI_URL_IMAGE)
-            .header("Authorization", "Bearer ${BuildConfig.TOKEN}")
-            .post(requestBody)
-            .build()
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                toast("Failed to generate image")
-                setInProgress(false)
-            }
+        viewModel.generateImage(text)
 
-            override fun onResponse(call: Call, response: Response) {
-                response.body?.let {
-                    try {
-                        val jsonObject = JSONObject(it.string())
-                        val imageUrl = jsonObject
-                            .getJSONArray("data")
-                            .getJSONObject(0)
-                            .getString("url")
-                        loadImage(imageUrl)
-                        setInProgress(false)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        setInProgress(false)
-                    }
-                } ?: kotlin.run {
-                    setInProgress(false)
-                }
+        viewModel.liveDataImage.observe(this) { response ->
+            response.data?.get(0)?.url?.let {
+                loadImage(it)
             }
-        })
+            setInProgress(false)
+        }
     }
 
     private fun setInProgress(inProgress: Boolean) = binding.apply {
-        runOnUiThread {
-            if (inProgress) {
-                progressbar.toShow()
-                btnGenerate.toGone()
-            } else {
-                progressbar.toGone()
-                btnGenerate.toShow()
-            }
+        if (inProgress) {
+            progressbar.toShow()
+            btnGenerate.toGone()
+        } else {
+            progressbar.toGone()
+            btnGenerate.toShow()
         }
     }
 
     private fun loadImage(url: String) {
-        runOnUiThread {
-            Glide.with(this).load(url).into(binding.ivShow)
-        }
+        Glide.with(this).load(url).into(binding.ivShow)
     }
 
     private fun checkNetWork() = NetworkUtils.isConnected(this@ImageSearchActivity)

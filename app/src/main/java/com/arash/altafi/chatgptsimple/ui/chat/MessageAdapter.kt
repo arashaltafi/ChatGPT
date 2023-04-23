@@ -4,10 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.arash.altafi.chatgptsimple.databinding.ChatItemBinding
-import com.arash.altafi.chatgptsimple.data.model.Message
-import com.arash.altafi.chatgptsimple.data.model.MessageState
-import com.arash.altafi.chatgptsimple.utils.toGone
-import com.arash.altafi.chatgptsimple.utils.toShow
+import com.arash.altafi.chatgptsimple.domain.model.Message
+import com.arash.altafi.chatgptsimple.domain.model.MessageState
+import com.arash.altafi.chatgptsimple.ext.toGone
+import com.arash.altafi.chatgptsimple.ext.toShow
 
 class MessageAdapter(private var messageList: ArrayList<Message>) :
     RecyclerView.Adapter<MessageAdapter.MyViewHolder>() {

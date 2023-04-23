@@ -14,13 +14,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.arash.altafi.chatgptsimple.BuildConfig
 import com.arash.altafi.chatgptsimple.R
-import com.arash.altafi.chatgptsimple.data.local.DialogEntity
-import com.arash.altafi.chatgptsimple.data.local.MessengerDao
-import com.arash.altafi.chatgptsimple.data.local.MessengerDatabase
+import com.arash.altafi.chatgptsimple.domain.provider.local.DialogEntity
+import com.arash.altafi.chatgptsimple.domain.provider.local.MessengerDao
+import com.arash.altafi.chatgptsimple.domain.provider.local.MessengerDatabase
 import com.arash.altafi.chatgptsimple.databinding.ActivityChatBinding
-import com.arash.altafi.chatgptsimple.data.model.Message
-import com.arash.altafi.chatgptsimple.data.model.MessageState
+import com.arash.altafi.chatgptsimple.domain.model.Message
+import com.arash.altafi.chatgptsimple.domain.model.MessageState
+import com.arash.altafi.chatgptsimple.ext.isDarkTheme
+import com.arash.altafi.chatgptsimple.ext.toGone
+import com.arash.altafi.chatgptsimple.ext.toShow
+import com.arash.altafi.chatgptsimple.ext.toast
 import com.arash.altafi.chatgptsimple.utils.*
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -34,6 +39,7 @@ import org.json.JSONObject
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
+@AndroidEntryPoint
 class ChatActivity : AppCompatActivity() {
 
     private val binding by lazy {

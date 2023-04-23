@@ -10,6 +10,7 @@ import androidx.annotation.DrawableRes
 import androidx.core.view.ViewCompat
 import com.arash.altafi.chatgptsimple.R
 import com.arash.altafi.chatgptsimple.databinding.LayoutPopupMenuBinding
+import com.arash.altafi.chatgptsimple.ext.*
 import com.google.android.material.textview.MaterialTextView
 
 object PopupUtil {

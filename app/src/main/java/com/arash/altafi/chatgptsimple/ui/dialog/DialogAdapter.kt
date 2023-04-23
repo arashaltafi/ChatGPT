@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.arash.altafi.chatgptsimple.data.local.DialogEntity
+import com.arash.altafi.chatgptsimple.domain.provider.local.DialogEntity
 import com.arash.altafi.chatgptsimple.databinding.DialogItemBinding
 
 class DialogAdapter(private var dialogList: ArrayList<DialogEntity>) :

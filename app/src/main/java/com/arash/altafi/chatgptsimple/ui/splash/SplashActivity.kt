@@ -7,8 +7,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.arash.altafi.chatgptsimple.BuildConfig
 import com.arash.altafi.chatgptsimple.databinding.ActivitySplashBinding
 import com.arash.altafi.chatgptsimple.ui.dialog.DialogActivity
+import dagger.hilt.android.AndroidEntryPoint
 
 @SuppressLint("CustomSplashScreen")
+@AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
 
     private val binding by lazy {
