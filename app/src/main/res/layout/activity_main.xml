@@ -110,8 +110,9 @@
     <RelativeLayout
         android:id="@+id/bottom_layout"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:background="@color/grey_100"
         android:padding="8dp">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -122,7 +123,13 @@
             android:layout_toStartOf="@id/btnSend"
             android:background="@drawable/rounded_corner"
             android:hint="Write here ..."
-            android:padding="16dp" />
+            android:imeOptions="actionSend"
+            android:inputType="textMultiLine|text"
+            android:maxLength="150"
+            android:maxLines="5"
+            android:minLines="1"
+            android:padding="16dp"
+            android:scrollbarAlwaysDrawVerticalTrack="true" />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/btnSend"

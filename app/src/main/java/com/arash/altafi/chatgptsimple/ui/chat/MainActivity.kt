@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.arash.altafi.chatgptsimple.BuildConfig
@@ -101,6 +102,15 @@ class MainActivity : AppCompatActivity() {
 
         ivMore.setOnClickListener {
             popupWindow(it)
+        }
+
+        edtMessage.setOnEditorActionListener { _, actionId, _ ->
+            when (actionId) {
+                EditorInfo.IME_ACTION_SEND -> {
+                    btnSend.performClick()
+                }
+            }
+            false
         }
     }
 
