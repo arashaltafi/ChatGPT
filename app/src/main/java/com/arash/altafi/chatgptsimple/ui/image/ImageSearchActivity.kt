@@ -13,10 +13,7 @@ import androidx.core.content.ContextCompat
 import com.arash.altafi.chatgptsimple.BuildConfig
 import com.arash.altafi.chatgptsimple.R
 import com.arash.altafi.chatgptsimple.databinding.ActivityImageSearchBinding
-import com.arash.altafi.chatgptsimple.utils.NetworkUtils
-import com.arash.altafi.chatgptsimple.utils.toGone
-import com.arash.altafi.chatgptsimple.utils.toShow
-import com.arash.altafi.chatgptsimple.utils.toast
+import com.arash.altafi.chatgptsimple.utils.*
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -80,6 +77,7 @@ class ImageSearchActivity : AppCompatActivity() {
                     toast("Please type something")
                     edtImage.error = "Please type something"
                 } else {
+                    it.hideKeyboard()
                     callAPI(question)
                 }
             } else {

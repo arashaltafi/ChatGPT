@@ -5,8 +5,10 @@ import android.content.Context
 import android.content.res.Resources
 import android.os.Build
 import android.util.DisplayMetrics
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.AttrRes
@@ -107,3 +109,20 @@ fun Context.getDrawableCompat(res: Int): VectorDrawableCompat? {
 
 fun getScreenWidth() = Resources.getSystem().displayMetrics.widthPixels
 fun getScreenHeight() = Resources.getSystem().displayMetrics.heightPixels
+
+fun View.hideKeyboard() {
+    val inputMethodManager =
+        context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputMethodManager.hideSoftInputFromWindow(windowToken, 0)
+}
+
+fun View.showKeyboard() {
+    this.requestFocus()
+    try {
+        val inputMethodManager =
+            context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+    } catch (e: java.lang.Exception) {
+        Log.e("showKeyboard", "showKeyboard failed, error: $e")
+    }
+}
