@@ -3,5 +3,6 @@
 
     <attr name="colorBackGround_Second" format="color" />
     <attr name="background_icon" format="color" />
+    <attr name="colorDivider" format="color" />
 
 </resources>

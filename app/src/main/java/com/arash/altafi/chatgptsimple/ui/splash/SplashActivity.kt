@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.arash.altafi.chatgptsimple.BuildConfig
 import com.arash.altafi.chatgptsimple.databinding.ActivitySplashBinding
-import com.arash.altafi.chatgptsimple.ui.chat.ChatActivity
+import com.arash.altafi.chatgptsimple.ui.dialog.DialogActivity
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
@@ -26,7 +26,7 @@ class SplashActivity : AppCompatActivity() {
         tvAppVersion.text = BuildConfig.VERSION_NAME
 
         root.postDelayed({
-            startActivity(Intent(this@SplashActivity, ChatActivity::class.java))
+            startActivity(Intent(this@SplashActivity, DialogActivity::class.java))
             finish()
         }, 4000)
     }

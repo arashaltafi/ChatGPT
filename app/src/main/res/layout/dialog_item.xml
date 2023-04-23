@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layoutDirection="ltr"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:paddingHorizontal="24dp"
+        android:paddingVertical="16dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivProfile"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="2dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_min="44dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearance="@style/appearance.round.50"
+            app:srcCompat="@drawable/robot"
+            app:strokeColor="@color/purple"
+            app:strokeWidth="1dp" />
+
+        <View
+            android:id="@+id/badge"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_margin="3dp"
+            android:background="@drawable/bg_badge_online"
+            app:layout_constraintBottom_toBottomOf="@id/ivProfile"
+            app:layout_constraintStart_toStartOf="@+id/ivProfile" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvTitle"
+            style="@style/txt.h1.medium"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:drawablePadding="2dp"
+            android:elevation="2dp"
+            android:ellipsize="end"
+            android:lines="1"
+            android:maxLines="1"
+            android:singleLine="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ivProfile"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Arash Altafi" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivMessageStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
+            app:layout_constraintEnd_toStartOf="@+id/tvTitle"
+            app:layout_constraintTop_toTopOf="@+id/tvTitle"
+            tools:srcCompat="@drawable/ic_tick_double" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvBadge"
+            style="@style/txt.h00.medium"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/badge"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@id/tvTitle"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvTitle"
+            tools:text="10"
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.2dp"
+        android:layout_marginHorizontal="16dp"
+        android:background="?colorDivider" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

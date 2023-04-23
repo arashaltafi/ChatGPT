@@ -15,6 +15,7 @@
 
         <item name="colorBackGround_Second">@color/grey_900</item>
         <item name="background_icon">@color/white</item>
+        <item name="colorDivider">#4B4949</item>
 
     </style>
 
