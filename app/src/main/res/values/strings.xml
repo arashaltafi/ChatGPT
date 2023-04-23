@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ChatGPT Simple</string>
+    <string name="gpt_image">GPT Image</string>
 </resources>

@@ -1,20 +1,24 @@
-package com.arash.altafi.chatgptsimple
+package com.arash.altafi.chatgptsimple.ui.chat
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.ColorStateList
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
 import android.os.Build
 import android.os.Bundle
+import android.view.Gravity
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.arash.altafi.chatgptsimple.BuildConfig
+import com.arash.altafi.chatgptsimple.R
 import com.arash.altafi.chatgptsimple.databinding.ActivityMainBinding
-import com.arash.altafi.chatgptsimple.utils.NetworkUtils
-import com.arash.altafi.chatgptsimple.utils.toGone
-import com.arash.altafi.chatgptsimple.utils.toShow
-import com.arash.altafi.chatgptsimple.utils.toast
+import com.arash.altafi.chatgptsimple.model.Message
+import com.arash.altafi.chatgptsimple.model.MessageState
+import com.arash.altafi.chatgptsimple.ui.image.ImageSearchActivity
+import com.arash.altafi.chatgptsimple.utils.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -88,12 +92,31 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     addToChat(question, MessageState.ME)
                     callAPI(question)
-                    tvWelcome.toGone()
                 }
             } else {
-                toast("Please Turn On Your Internet.")
+                toast("Please Turn On Your Internet!!!")
             }
         }
+
+        ivMore.setOnClickListener {
+            popupWindow(it)
+        }
+    }
+
+    private fun popupWindow(view: View) {
+        PopupUtil.showPopup(
+            view,
+            listOf(
+                PopupUtil.PopupItem(
+                    R.drawable.ic_baseline_image_search_24,
+                    getString(R.string.gpt_image)
+                ) {
+                    startActivity(Intent(this, ImageSearchActivity::class.java))
+                }
+            ),
+            Gravity.BOTTOM.or(Gravity.END),
+            setTint = false
+        )
     }
 
     private fun checkNetWork() = NetworkUtils.isConnected(this@MainActivity)
@@ -106,7 +129,6 @@ class MainActivity : AppCompatActivity() {
             ContextCompat.getColor(this, R.color.green)
         val color = if (isConnect) green else red
         binding.ivStatus.setColorFilter(color)
-
     }
 
     @SuppressLint("NotifyDataSetChanged")

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:clipToPadding="false"
+    android:padding="5dp">
+
+    <com.google.android.material.card.MaterialCardView
+        style="@style/card.round"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="5dp"
+        android:minWidth="150dp"
+        app:cardElevation="5dp">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tvItemPopupMenu"
+                style="@style/txt.h00"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="16dp"
+                android:gravity="center_vertical"
+                android:visibility="gone"
+                app:drawableTint="?android:attr/textColorHint"
+                tools:drawableStartCompat="@drawable/ic_delete"
+                tools:text="پاک کردن گفتگو"
+                tools:visibility="visible" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.appcompat.widget.LinearLayoutCompat>
