@@ -89,6 +89,7 @@ class MainActivity : AppCompatActivity() {
                 edtMessage.setText("")
                 if (question.isEmpty()) {
                     toast("Please Write Your Question")
+                    edtMessage.error = "Please Write Your Question"
                 } else {
                     addToChat(question, MessageState.ME)
                     callAPI(question)
