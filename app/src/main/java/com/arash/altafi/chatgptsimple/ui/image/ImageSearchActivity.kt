@@ -93,7 +93,7 @@ class ImageSearchActivity : AppCompatActivity() {
         val jsonBody = JSONObject()
         try {
             jsonBody.put("prompt", text)
-            jsonBody.put("size", "250x250")
+            jsonBody.put("size", "256x256")
         } catch (e: Exception) {
             e.printStackTrace()
         }
