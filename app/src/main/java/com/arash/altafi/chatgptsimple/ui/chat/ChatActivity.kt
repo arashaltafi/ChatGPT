@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.arash.altafi.chatgptsimple.BuildConfig
 import com.arash.altafi.chatgptsimple.R
-import com.arash.altafi.chatgptsimple.databinding.ActivityMainBinding
+import com.arash.altafi.chatgptsimple.databinding.ActivityChatBinding
 import com.arash.altafi.chatgptsimple.model.Message
 import com.arash.altafi.chatgptsimple.model.MessageState
 import com.arash.altafi.chatgptsimple.ui.image.ImageSearchActivity
@@ -33,10 +33,10 @@ import org.json.JSONObject
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
-class MainActivity : AppCompatActivity() {
+class ChatActivity : AppCompatActivity() {
 
     private val binding by lazy {
-        ActivityMainBinding.inflate(layoutInflater)
+        ActivityChatBinding.inflate(layoutInflater)
     }
 
     private var messageList: ArrayList<Message> = arrayListOf()
@@ -81,9 +81,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         val background = if (isDarkTheme()) {
-            ContextCompat.getDrawable(this@MainActivity, R.drawable.chat_bg_dark)
+            ContextCompat.getDrawable(this@ChatActivity, R.drawable.chat_bg_dark)
         } else {
-            ContextCompat.getDrawable(this@MainActivity, R.drawable.chat_bg_light)
+            ContextCompat.getDrawable(this@ChatActivity, R.drawable.chat_bg_light)
         }
         rlRoot.background = background
 
@@ -137,7 +137,7 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    private fun checkNetWork() = NetworkUtils.isConnected(this@MainActivity)
+    private fun checkNetWork() = NetworkUtils.isConnected(this@ChatActivity)
 
     @SuppressLint("ResourceAsColor")
     private fun changeIconStatus(isConnect: Boolean) {

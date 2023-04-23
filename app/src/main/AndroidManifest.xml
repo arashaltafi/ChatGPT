@@ -21,7 +21,7 @@
             android:configChanges="uiMode"
             android:exported="false" />
         <activity
-            android:name=".ui.chat.MainActivity"
+            android:name=".ui.chat.ChatActivity"
             android:configChanges="uiMode"
             android:exported="false" />
         <activity
