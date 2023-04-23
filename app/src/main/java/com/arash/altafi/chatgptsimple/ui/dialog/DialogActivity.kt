@@ -10,10 +10,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
+import androidx.activity.viewModels
 import com.arash.altafi.chatgptsimple.R
 import com.arash.altafi.chatgptsimple.domain.provider.local.DialogEntity
-import com.arash.altafi.chatgptsimple.domain.provider.local.MessengerDao
-import com.arash.altafi.chatgptsimple.domain.provider.local.MessengerDatabase
 import com.arash.altafi.chatgptsimple.databinding.ActivityDialogBinding
 import com.arash.altafi.chatgptsimple.ext.toGone
 import com.arash.altafi.chatgptsimple.ext.toShow
@@ -32,10 +31,10 @@ class DialogActivity : AppCompatActivity() {
     private val binding by lazy {
         ActivityDialogBinding.inflate(layoutInflater)
     }
-    private var dialogAdapter: DialogAdapter? = null
 
-    private var messengerDatabase: MessengerDatabase? = null
-    private var messengerDao: MessengerDao? = null
+    private val viewModel: DialogViewModel by viewModels()
+
+    private var dialogAdapter: DialogAdapter? = null
 
     private var networkConnection: ((connected: Boolean) -> Unit)? = null
 
@@ -55,8 +54,6 @@ class DialogActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        messengerDatabase = MessengerDatabase.getAppDataBase(this@DialogActivity)
-        messengerDao = messengerDatabase?.MessengerDao()
         registerNetworkConnectivity(this)
         init()
     }
@@ -100,12 +97,12 @@ class DialogActivity : AppCompatActivity() {
     }
 
     private fun handleList() = binding.apply {
-        val dialogListEntity = messengerDao?.getAllDialog()
-        if (dialogListEntity?.isEmpty() == true) {
+        val dialogListEntity = viewModel.getAll()
+        if (dialogListEntity.isEmpty()) {
             lottieEmpty.toShow()
         } else {
             lottieEmpty.toGone()
-            dialogAdapter = DialogAdapter(ArrayList(dialogListEntity!!))
+            dialogAdapter = DialogAdapter(ArrayList(dialogListEntity))
             rvDialogs.adapter = dialogAdapter
         }
 
@@ -129,7 +126,7 @@ class DialogActivity : AppCompatActivity() {
                     R.drawable.ic_baseline_delete_24,
                     getString(R.string.delete)
                 ) {
-                    messengerDao?.deleteDialog(dialogModel)
+                    viewModel.delete(dialogModel)
                     handleList()
                     toast("SuccessFully Deleted")
                 }
