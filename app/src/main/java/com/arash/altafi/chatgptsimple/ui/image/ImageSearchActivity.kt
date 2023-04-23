@@ -7,6 +7,7 @@ import android.net.Network
 import android.net.NetworkRequest
 import android.os.Build
 import android.os.Bundle
+import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.arash.altafi.chatgptsimple.BuildConfig
@@ -86,6 +87,14 @@ class ImageSearchActivity : AppCompatActivity() {
             }
         }
 
+        edtImage.setOnEditorActionListener { _, actionId, _ ->
+            when (actionId) {
+                EditorInfo.IME_ACTION_SEND -> {
+                    btnGenerate.performClick()
+                }
+            }
+            false
+        }
     }
 
     private fun callAPI(text: String) {
