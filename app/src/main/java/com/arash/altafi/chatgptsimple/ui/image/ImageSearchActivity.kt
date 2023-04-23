@@ -69,6 +69,13 @@ class ImageSearchActivity : AppCompatActivity() {
             }
         }
 
+        val background = if (isDarkTheme()) {
+            ContextCompat.getDrawable(this@ImageSearchActivity, R.drawable.chat_bg_dark)
+        } else {
+            ContextCompat.getDrawable(this@ImageSearchActivity, R.drawable.chat_bg_light)
+        }
+        root.background = background
+
         btnGenerate.setOnClickListener {
             if (checkNetWork()) {
                 val question = edtImage.text.toString().trim()
