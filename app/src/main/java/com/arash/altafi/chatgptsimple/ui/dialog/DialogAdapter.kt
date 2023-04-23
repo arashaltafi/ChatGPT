@@ -24,7 +24,7 @@ class DialogAdapter(private var dialogList: ArrayList<DialogEntity>) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(dialogModel: DialogEntity) = binding.apply {
-            tvTitle.text = dialogModel.title
+            tvTitle.text = dialogModel.message
             tvBadge.text = dialogModel.messageCount.toString()
         }
     }

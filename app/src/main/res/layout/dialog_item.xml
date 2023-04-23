@@ -23,8 +23,8 @@
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_min="44dp"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:shapeAppearance="@style/appearance.round.50"
             app:srcCompat="@drawable/robot"
@@ -38,7 +38,7 @@
             android:layout_margin="3dp"
             android:background="@drawable/bg_badge_online"
             app:layout_constraintBottom_toBottomOf="@id/ivProfile"
-            app:layout_constraintStart_toStartOf="@+id/ivProfile" />
+            app:layout_constraintEnd_toEndOf="@+id/ivProfile" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvTitle"
@@ -49,23 +49,15 @@
             android:drawablePadding="2dp"
             android:elevation="2dp"
             android:ellipsize="end"
+            android:gravity="start"
             android:lines="1"
             android:maxLines="1"
             android:singleLine="true"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/ivProfile"
+            app:layout_constraintEnd_toStartOf="@+id/tvBadge"
+            app:layout_constraintStart_toEndOf="@+id/ivProfile"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Arash Altafi" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/ivMessageStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="4dp"
-            app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
-            app:layout_constraintEnd_toStartOf="@+id/tvTitle"
-            app:layout_constraintTop_toTopOf="@+id/tvTitle"
-            tools:srcCompat="@drawable/ic_tick_double" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvBadge"
@@ -78,7 +70,7 @@
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="@id/tvTitle"
             app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/tvTitle"
             tools:text="10"
             tools:visibility="visible" />
@@ -87,7 +79,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="0.2dp"
+        android:layout_height="1dp"
         android:layout_marginHorizontal="16dp"
         android:background="?colorDivider" />
 

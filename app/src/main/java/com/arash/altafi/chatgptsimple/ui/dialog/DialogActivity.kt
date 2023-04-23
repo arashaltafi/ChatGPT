@@ -48,6 +48,8 @@ class DialogActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        messengerDatabase = MessengerDatabase.getAppDataBase(this@DialogActivity)
+        messengerDao = messengerDatabase?.MessengerDao()
         registerNetworkConnectivity(this)
         init()
     }
@@ -62,20 +64,19 @@ class DialogActivity : AppCompatActivity() {
             }
         }
 
-        messengerDatabase = MessengerDatabase.getAppDataBase(this@DialogActivity)
-        messengerDao = messengerDatabase?.MessengerDao()
-        val dialogListEntity = messengerDao?.getAllDialog()
+        flNewChat.setOnClickListener {
+            startActivity(Intent(this@DialogActivity, ChatActivity::class.java))
+        }
+    }
 
+    private fun handleList() = binding.apply {
+        val dialogListEntity = messengerDao?.getAllDialog()
         if (dialogListEntity?.isEmpty() == true) {
             lottieEmpty.toShow()
         } else {
             lottieEmpty.toGone()
             dialogAdapter = DialogAdapter(ArrayList(dialogListEntity!!))
             rvDialogs.adapter = dialogAdapter
-        }
-
-        flNewChat.setOnClickListener {
-            startActivity(Intent(this@DialogActivity, ChatActivity::class.java))
         }
     }
 
@@ -108,6 +109,11 @@ class DialogActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         unregisterNetworkConnectivity(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        handleList()
     }
 
 }

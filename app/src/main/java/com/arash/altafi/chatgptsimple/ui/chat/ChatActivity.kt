@@ -15,6 +15,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.arash.altafi.chatgptsimple.BuildConfig
 import com.arash.altafi.chatgptsimple.R
+import com.arash.altafi.chatgptsimple.data.local.DialogEntity
+import com.arash.altafi.chatgptsimple.data.local.MessengerDao
+import com.arash.altafi.chatgptsimple.data.local.MessengerDatabase
 import com.arash.altafi.chatgptsimple.databinding.ActivityChatBinding
 import com.arash.altafi.chatgptsimple.data.model.Message
 import com.arash.altafi.chatgptsimple.data.model.MessageState
@@ -39,6 +42,9 @@ class ChatActivity : AppCompatActivity() {
         ActivityChatBinding.inflate(layoutInflater)
     }
 
+    private var messengerDatabase: MessengerDatabase? = null
+    private var messengerDao: MessengerDao? = null
+
     private var messageList: ArrayList<Message> = arrayListOf()
     private lateinit var messageAdapter: MessageAdapter
 
@@ -46,6 +52,7 @@ class ChatActivity : AppCompatActivity() {
         .readTimeout(60, TimeUnit.SECONDS)
         .build()
 
+    private val welcomeMessage = "Hi, How may I assist you today?"
     private val json: MediaType = "application/json; charset=utf-8".toMediaType()
 
     private var networkConnection: ((connected: Boolean) -> Unit)? = null
@@ -71,6 +78,14 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun init() = binding.apply {
+        messengerDatabase = MessengerDatabase.getAppDataBase(this@ChatActivity)
+        messengerDao = messengerDatabase?.MessengerDao()
+        val dialogEntity = DialogEntity()
+        dialogEntity.id = getLastIdOfDB() + 1
+        dialogEntity.message = welcomeMessage
+        dialogEntity.messageCount = 1
+        messengerDao?.insertDialog(dialogEntity)
+
         //first time (before change network)
         changeIconStatus(checkNetWork())
 
@@ -80,16 +95,16 @@ class ChatActivity : AppCompatActivity() {
             }
         }
 
-        val background = if (isDarkTheme()) {
+        val background = if (isDarkTheme())
             ContextCompat.getDrawable(this@ChatActivity, R.drawable.chat_bg_dark)
-        } else {
+        else
             ContextCompat.getDrawable(this@ChatActivity, R.drawable.chat_bg_light)
-        }
+
         rlRoot.background = background
 
         messageAdapter = MessageAdapter(messageList)
         rvChat.adapter = messageAdapter
-        addToChat("Hi, How may I assist you today?", MessageState.BOT)
+        addToChat(welcomeMessage, MessageState.BOT)
 
         btnSend.setOnClickListener {
             if (checkNetWork()) {
@@ -120,6 +135,8 @@ class ChatActivity : AppCompatActivity() {
             false
         }
     }
+
+    private fun getLastIdOfDB() = (messengerDao?.getLastDialogId() ?: 1)
 
     private fun popupWindow(view: View) {
         PopupUtil.showPopup(
@@ -155,6 +172,14 @@ class ChatActivity : AppCompatActivity() {
             messageList.add(Message(message, sentBy))
             messageAdapter.notifyDataSetChanged()
             binding.rvChat.smoothScrollToPosition(messageAdapter.itemCount)
+
+            if (sentBy != MessageState.TYPING && message != welcomeMessage) {
+                val dialogEntity = DialogEntity()
+                dialogEntity.id = getLastIdOfDB()
+                dialogEntity.message = message
+                dialogEntity.messageCount = (messengerDao?.getAllDialog()?.size ?: 0) + 1
+                messengerDao?.updateDialog(dialogEntity)
+            }
         }
     }
 

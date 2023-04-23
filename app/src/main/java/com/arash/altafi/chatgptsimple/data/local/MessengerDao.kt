@@ -11,6 +11,9 @@ interface MessengerDao {
     @Query("SELECT * FROM tbl_dialog")
     fun getAllDialog(): List<DialogEntity>
 
+    @Query("SELECT id FROM tbl_dialog ORDER BY id DESC LIMIT 1")
+    fun getLastDialogId(): Long
+
     @Delete
     fun deleteDialog(dialogEntity: DialogEntity)
 

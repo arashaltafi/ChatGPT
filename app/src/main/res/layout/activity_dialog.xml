@@ -89,6 +89,7 @@
             app:fabSize="normal"
             app:layout_anchor="@id/rvDialogs"
             app:layout_anchorGravity="bottom|start"
+            app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
             app:tint="@android:color/white" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
