@@ -51,6 +51,8 @@ class MessageAdapter(private var messageList: ArrayList<Message>) :
                     llRightChatView.toGone()
                     progressTyping.toGone()
                     if (item.isImage) {
+                        tvCopy.toGone()
+                        tvShare.toGone()
                         Glide.with(root.context).load(item.message).into(binding.ivImage)
                         ivImage.toShow()
                         llLeftChatView.toGone()
