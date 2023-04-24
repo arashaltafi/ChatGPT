@@ -36,6 +36,40 @@
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tvCopy"
+        style="@style/ClickableBorderlessStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/llLeftChatView"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/background_buttons"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="4dp"
+        android:text="copy"
+        android:textColor="@color/white"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tvShare"
+        style="@style/ClickableBorderlessStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/llLeftChatView"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_toEndOf="@+id/tvCopy"
+        android:background="@drawable/background_buttons"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="4dp"
+        android:text="share"
+        android:textColor="@color/white"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/ivImage"
         android:layout_width="250dp"

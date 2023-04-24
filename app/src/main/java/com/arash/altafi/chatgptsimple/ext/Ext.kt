@@ -1,7 +1,10 @@
 package com.arash.altafi.chatgptsimple.ext
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.util.DisplayMetrics
@@ -139,4 +142,22 @@ fun View.setMargins(left: Int, top: Int, right: Int, bottom: Int) {
         p.setMargins(left, top, right, bottom)
         requestLayout()
     }
+}
+
+fun Context.copyTextToClipboard(textToCopy: String) {
+    val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    val clipData = ClipData.newPlainText("text", textToCopy)
+    clipboardManager.setPrimaryClip(clipData)
+    Toast.makeText(this, "Text copied", Toast.LENGTH_LONG).show()
+}
+
+fun Context.shareContent(contentValue: String) {
+    val shareIntent = Intent()
+    shareIntent.action = Intent.ACTION_SEND
+    shareIntent.type = "text/plain"
+    shareIntent.putExtra(
+        Intent.EXTRA_TEXT,
+        contentValue
+    )
+    startActivity(Intent.createChooser(shareIntent, "Send to"))
 }
