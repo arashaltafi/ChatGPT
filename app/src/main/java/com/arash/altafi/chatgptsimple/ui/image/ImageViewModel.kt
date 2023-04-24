@@ -3,8 +3,8 @@ package com.arash.altafi.chatgptsimple.ui.image
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.arash.altafi.chatgptsimple.base.BaseViewModel
-import com.arash.altafi.chatgptsimple.domain.model.ImagePostBody
-import com.arash.altafi.chatgptsimple.domain.model.ImageResponseBody
+import com.arash.altafi.chatgptsimple.domain.model.image.ImagePostBody
+import com.arash.altafi.chatgptsimple.domain.model.image.ImageResponseBody
 import com.arash.altafi.chatgptsimple.domain.repository.ImageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

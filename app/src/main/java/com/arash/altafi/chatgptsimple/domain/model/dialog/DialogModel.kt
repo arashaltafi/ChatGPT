@@ -1,4 +1,4 @@
-package com.arash.altafi.chatgptsimple.domain.model
+package com.arash.altafi.chatgptsimple.domain.model.dialog
 
 data class DialogModel(
     val id: Long,

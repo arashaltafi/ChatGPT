@@ -13,12 +13,13 @@ import android.view.inputmethod.EditorInfo
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.arash.altafi.chatgptsimple.BuildConfig
 import com.arash.altafi.chatgptsimple.R
 import com.arash.altafi.chatgptsimple.domain.provider.local.DialogEntity
 import com.arash.altafi.chatgptsimple.databinding.ActivityChatBinding
-import com.arash.altafi.chatgptsimple.domain.model.Message
-import com.arash.altafi.chatgptsimple.domain.model.MessageState
+import com.arash.altafi.chatgptsimple.domain.model.chat.ChatPostBody
+import com.arash.altafi.chatgptsimple.domain.model.chat.ChatRole
+import com.arash.altafi.chatgptsimple.domain.model.chat.Message
+import com.arash.altafi.chatgptsimple.domain.model.chat.MessageState
 import com.arash.altafi.chatgptsimple.ext.isDarkTheme
 import com.arash.altafi.chatgptsimple.ext.toGone
 import com.arash.altafi.chatgptsimple.ext.toShow
@@ -28,16 +29,8 @@ import com.arash.altafi.chatgptsimple.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okhttp3.*
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.toRequestBody
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
-import java.io.IOException
-import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class ChatActivity : AppCompatActivity() {
@@ -46,19 +39,15 @@ class ChatActivity : AppCompatActivity() {
         ActivityChatBinding.inflate(layoutInflater)
     }
 
-    private val viewModel: DialogViewModel by viewModels()
+    private val dialogViewModel: DialogViewModel by viewModels()
+    private val chatViewModel: ChatViewModel by viewModels()
 
     private var dialogId: Long = -1L
 
     private var messageList: ArrayList<Message> = arrayListOf()
     private lateinit var messageAdapter: MessageAdapter
 
-    private var client: OkHttpClient = OkHttpClient.Builder()
-        .readTimeout(60, TimeUnit.SECONDS)
-        .build()
-
     private val welcomeMessage = "Hi, How may I assist you today?"
-    private val json: MediaType = "application/json; charset=utf-8".toMediaType()
 
     private var networkConnection: ((connected: Boolean) -> Unit)? = null
 
@@ -80,18 +69,19 @@ class ChatActivity : AppCompatActivity() {
 
         registerNetworkConnectivity(this)
         init()
+        initObserve()
     }
 
     private fun init() = binding.apply {
         dialogId = intent.getLongExtra("DialogId", -1)
         if (dialogId != -1L) {
-            viewModel.getDialogById(dialogId)
+            dialogViewModel.getDialogById(dialogId)
         } else {
             val dialogEntity = DialogEntity()
             dialogEntity.id = getLastIdOfDB() + 1
             dialogEntity.message = welcomeMessage
             dialogEntity.messageCount = 1
-            viewModel.insertDialog(dialogEntity)
+            dialogViewModel.insertDialog(dialogEntity)
         }
 
         //first time (before change network)
@@ -144,7 +134,7 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
-    private fun getLastIdOfDB() = viewModel.getLastDialogId()
+    private fun getLastIdOfDB() = dialogViewModel.getLastDialogId()
 
     private fun popupWindow(view: View) {
         val list = mutableListOf(
@@ -162,7 +152,7 @@ class ChatActivity : AppCompatActivity() {
                     R.drawable.ic_baseline_delete_24,
                     getString(R.string.delete)
                 ) {
-                    viewModel.deleteDialogById(dialogId)
+                    dialogViewModel.deleteDialogById(dialogId)
                     finish()
                 }
             )
@@ -190,81 +180,48 @@ class ChatActivity : AppCompatActivity() {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun addToChat(message: String, sentBy: MessageState) {
-        runOnUiThread {
-            messageList.add(Message(message, sentBy))
-            messageAdapter.notifyDataSetChanged()
-            binding.rvChat.smoothScrollToPosition(messageAdapter.itemCount)
+        messageList.add(Message(message, sentBy))
+        messageAdapter.notifyDataSetChanged()
+        binding.rvChat.smoothScrollToPosition(messageAdapter.itemCount)
 
-            if (sentBy != MessageState.TYPING && message != welcomeMessage) {
-                val dialogEntity = DialogEntity()
-                dialogEntity.id = getLastIdOfDB()
-                dialogEntity.message = message
-                dialogEntity.messageCount = viewModel.getAllDialog().size + 1 //fixme
-                viewModel.updateDialog(dialogEntity)
-            }
+        if (sentBy != MessageState.TYPING && message != welcomeMessage) {
+            val dialogEntity = DialogEntity()
+            dialogEntity.id = getLastIdOfDB()
+            dialogEntity.message = message
+            dialogEntity.messageCount = dialogViewModel.getAllDialog().size + 1 //fixme
+            dialogViewModel.updateDialog(dialogEntity)
         }
     }
 
     private fun addResponse(response: String) {
         messageList.removeAt(messageList.size - 1)
         addToChat(response, MessageState.BOT)
-        runOnUiThread {
-            binding.tvToolbarState.toGone()
-            binding.btnSend.isClickable = true
-        }
+        binding.tvToolbarState.toGone()
+        binding.btnSend.isClickable = true
     }
 
-    private fun callAPI(question: String?) {
+    private fun callAPI(question: String) {
         binding.btnSend.isClickable = false
         messageList.add(Message("Typing... ", MessageState.TYPING))
         binding.tvToolbarState.toShow()
-        val jsonBody = JSONObject()
-        try {
-            jsonBody.put("model", "gpt-3.5-turbo")
-            val messageArr = JSONArray()
-            val obj = JSONObject()
-            obj.put("role", "user")
-            obj.put("content", question)
-            messageArr.put(obj)
-            jsonBody.put("messages", messageArr)
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
-        val requestBody = jsonBody.toString().toRequestBody(json)
-        val request: Request = Request.Builder()
-            .url(BuildConfig.OPENAI_URL)
-            .header("Authorization", "Bearer ${BuildConfig.TOKEN}")
-            .post(requestBody)
-            .build()
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                CoroutineScope(Dispatchers.Main).launch {
-                    delay(500)
-                    addResponse("Failed to load response due to " + e.message)
-                }
-            }
 
-            override fun onResponse(call: Call, response: Response) {
-                if (response.isSuccessful) {
-                    val jsonObject: JSONObject?
-                    try {
-                        jsonObject = JSONObject(response.body!!.string())
-                        val jsonArray = jsonObject.getJSONArray("choices")
-                        val result = jsonArray.getJSONObject(0)
-                            .getJSONObject("message")
-                            .getString("content")
-                        addResponse(result)
-                    } catch (e: JSONException) {
-                        e.printStackTrace()
-                    }
-                } else {
-                    CoroutineScope(Dispatchers.Main).launch {
-                        delay(500)
-                        addResponse("Failed to load response due to " + response.body.toString())
-                    }
-                }
-            }
-        })
+        chatViewModel.chatMessageList.add(
+            ChatPostBody.Message(
+                content = question,
+                role = ChatRole.USER.name.lowercase()
+            )
+        )
+        chatViewModel.sendMessage()
+    }
+
+    private fun initObserve() {
+        chatViewModel.liveChatData.observe(this) {
+            addResponse(it.choices[0].message.content)
+        }
+
+        chatViewModel.liveError.observe(this) {
+            addResponse("There is Was Error Please Send Again Later ...")
+        }
     }
 
     private fun registerNetworkConnectivity(context: Context) {

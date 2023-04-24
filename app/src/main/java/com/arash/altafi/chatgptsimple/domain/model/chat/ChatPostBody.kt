@@ -1,9 +1,7 @@
-package com.arash.altafi.chatgptsimple.domain.model
+package com.arash.altafi.chatgptsimple.domain.model.chat
 
-import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
-@Keep
 data class ChatPostBody(
     @SerializedName("frequency_penalty")
     val frequencyPenalty: Double,
@@ -20,7 +18,6 @@ data class ChatPostBody(
     @SerializedName("top_p")
     val topP: Int
 ) {
-    @Keep
     data class Message(
         @SerializedName("content")
         val content: String,

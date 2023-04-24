@@ -1,4 +1,4 @@
-package com.arash.altafi.chatgptsimple.domain.model
+package com.arash.altafi.chatgptsimple.domain.model.chat
 
 data class Message(
     var message: String,

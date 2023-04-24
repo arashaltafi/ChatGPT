@@ -1,7 +1,7 @@
 package com.arash.altafi.chatgptsimple.domain.repository
 
 import com.arash.altafi.chatgptsimple.base.BaseRepository
-import com.arash.altafi.chatgptsimple.domain.model.ChatPostBody
+import com.arash.altafi.chatgptsimple.domain.model.chat.ChatPostBody
 import com.arash.altafi.chatgptsimple.domain.provider.remote.ChatService
 import javax.inject.Inject
 

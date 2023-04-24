@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arash.altafi.chatgptsimple.ext.viewModelIO
+import com.google.android.play.core.tasks.OnFailureListener
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.flow.*
@@ -46,7 +47,8 @@ open class BaseViewModel : ViewModel() {
     fun <T> callApi(
         networkCall: Flow<Response<T>>,
         liveResult: MutableLiveData<T>? = null,
-        onResponse: ((T) -> Unit)? = null
+        onResponse: ((T) -> Unit)? = null,
+        onFailureListener: ((Boolean) -> Unit)? = null
     ) {
         val dispatchRetry: (() -> Unit)?
         dispatchRetry = {
@@ -58,7 +60,7 @@ open class BaseViewModel : ViewModel() {
                             onResponse?.invoke(it)
                         }
                     } else {
-                        throw IOException("Something went wrong")
+                        onFailureListener?.invoke(true)
                     }
                 }
             }

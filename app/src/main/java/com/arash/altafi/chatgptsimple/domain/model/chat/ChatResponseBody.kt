@@ -1,4 +1,4 @@
-package com.arash.altafi.chatgptsimple.domain.model
+package com.arash.altafi.chatgptsimple.domain.model.chat
 
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
