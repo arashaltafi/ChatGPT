@@ -2,11 +2,16 @@ package com.arash.altafi.chatgptsimple.ui.chat
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.Spannable
+import android.text.TextWatcher
+import android.text.style.ForegroundColorSpan
 import android.view.Gravity
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -20,11 +25,9 @@ import com.arash.altafi.chatgptsimple.domain.model.chat.ChatPostBody
 import com.arash.altafi.chatgptsimple.domain.model.chat.ChatRole
 import com.arash.altafi.chatgptsimple.domain.model.chat.Message
 import com.arash.altafi.chatgptsimple.domain.model.chat.MessageState
-import com.arash.altafi.chatgptsimple.ext.isDarkTheme
-import com.arash.altafi.chatgptsimple.ext.toGone
-import com.arash.altafi.chatgptsimple.ext.toShow
-import com.arash.altafi.chatgptsimple.ext.toast
+import com.arash.altafi.chatgptsimple.ext.*
 import com.arash.altafi.chatgptsimple.ui.dialog.DialogViewModel
+import com.arash.altafi.chatgptsimple.ui.image.ImageViewModel
 import com.arash.altafi.chatgptsimple.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -41,6 +44,7 @@ class ChatActivity : AppCompatActivity() {
 
     private val dialogViewModel: DialogViewModel by viewModels()
     private val chatViewModel: ChatViewModel by viewModels()
+    private val imageViewModel: ImageViewModel by viewModels()
 
     private var dialogId: Long = -1L
 
@@ -102,7 +106,7 @@ class ChatActivity : AppCompatActivity() {
 
         messageAdapter = MessageAdapter(messageList)
         rvChat.adapter = messageAdapter
-        addToChat(welcomeMessage, MessageState.BOT)
+        addToChat(welcomeMessage, MessageState.BOT, false)
 
         btnSend.setOnClickListener {
             if (checkNetWork()) {
@@ -112,8 +116,9 @@ class ChatActivity : AppCompatActivity() {
                     toast("Please Write Your Question")
                     edtMessage.error = "Please Write Your Question"
                 } else {
-                    addToChat(question, MessageState.ME)
-                    callAPI(question)
+                    it.hideKeyboard()
+                    addToChat(question, MessageState.ME, false)
+                    callAPI(question, question.startsWith("image/"))
                 }
             } else {
                 toast("Please Turn On Your Internet!!!")
@@ -123,6 +128,46 @@ class ChatActivity : AppCompatActivity() {
         ivMore.setOnClickListener {
             popupWindow(it)
         }
+
+        edtMessage.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // This method is called before the text is changed
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // Get the current text in the EditText
+                val text = edtMessage.text?.toString() ?: return
+                val spannable = edtMessage.editableText
+
+                // Check if the text contains the string "image/"
+                if (text.contains("image/")) {
+                    // Find the index of the start of the "image/" string
+                    val startIndex = text.indexOf("image/")
+
+                    // Find the index of the end of the "image/" string
+                    val endIndex = startIndex + "image/".length
+
+                    // Set the color of the "image/" string to red
+                    spannable.setSpan(
+                        ForegroundColorSpan(Color.RED),
+                        startIndex,
+                        endIndex,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                } else {
+                    // Remove the color if the "image/" string is no longer in the text
+                    val spans =
+                        spannable.getSpans(0, spannable.length, ForegroundColorSpan::class.java)
+                    for (span in spans) {
+                        spannable.removeSpan(span)
+                    }
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                // This method is called after the text is changed
+            }
+        })
 
         edtMessage.setOnEditorActionListener { _, actionId, _ ->
             when (actionId) {
@@ -179,8 +224,8 @@ class ChatActivity : AppCompatActivity() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun addToChat(message: String, sentBy: MessageState) {
-        messageList.add(Message(message, sentBy))
+    private fun addToChat(message: String, sentBy: MessageState, isImage: Boolean) {
+        messageList.add(Message(message, sentBy, isImage))
         messageAdapter.notifyDataSetChanged()
         binding.rvChat.smoothScrollToPosition(messageAdapter.itemCount)
 
@@ -193,34 +238,54 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
-    private fun addResponse(response: String) {
+    private fun addResponse(response: String, isImage: Boolean) {
         messageList.removeAt(messageList.size - 1)
-        addToChat(response, MessageState.BOT)
+        addToChat(response, MessageState.BOT, isImage)
         binding.tvToolbarState.toGone()
         binding.btnSend.isClickable = true
     }
 
-    private fun callAPI(question: String) {
+    private fun callAPI(question: String, isImage: Boolean) {
         binding.btnSend.isClickable = false
-        messageList.add(Message("Typing... ", MessageState.TYPING))
-        binding.tvToolbarState.toShow()
-
-        chatViewModel.chatMessageList.add(
-            ChatPostBody.Message(
-                content = question,
-                role = ChatRole.USER.name.lowercase()
+        messageList.add(
+            Message(
+                if (isImage) "Sending Image... " else "Typing... ",
+                MessageState.TYPING,
+                false
             )
         )
-        chatViewModel.sendMessage()
+
+        binding.tvToolbarState.apply {
+            text = if (isImage) "Sending Image... " else "Typing... "
+            toShow()
+        }
+
+        if (isImage) {
+            imageViewModel.generateImage(question.substringAfter("image/"))
+        } else {
+            chatViewModel.chatMessageList.add(
+                ChatPostBody.Message(
+                    content = question,
+                    role = ChatRole.USER.name.lowercase()
+                )
+            )
+            chatViewModel.sendMessage()
+        }
     }
 
     private fun initObserve() {
         chatViewModel.liveChatData.observe(this) {
-            addResponse(it.choices[0].message.content)
+            addResponse(it.choices[0].message.content, false)
         }
 
         chatViewModel.liveError.observe(this) {
-            addResponse("There is Was Error Please Send Again Later ...")
+            addResponse("There is Was Error Please Send Again Later ...", false)
+        }
+
+        imageViewModel.liveDataImage.observe(this) { response ->
+            response.data?.get(0)?.url?.let {
+                addResponse(it, true)
+            }
         }
     }
 

@@ -51,6 +51,7 @@ class ImageSearchActivity : AppCompatActivity() {
 
         registerNetworkConnectivity(this)
         init()
+        initObserve()
     }
 
     private fun init() = binding.apply {
@@ -99,7 +100,9 @@ class ImageSearchActivity : AppCompatActivity() {
     private fun callAPI(text: String) {
         setInProgress(true)
         viewModel.generateImage(text)
+    }
 
+    private fun initObserve() {
         viewModel.liveDataImage.observe(this) { response ->
             response.data?.get(0)?.url?.let {
                 loadImage(it)

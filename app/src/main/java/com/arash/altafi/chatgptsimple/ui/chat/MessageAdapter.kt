@@ -8,6 +8,7 @@ import com.arash.altafi.chatgptsimple.domain.model.chat.Message
 import com.arash.altafi.chatgptsimple.domain.model.chat.MessageState
 import com.arash.altafi.chatgptsimple.ext.toGone
 import com.arash.altafi.chatgptsimple.ext.toShow
+import com.bumptech.glide.Glide
 
 class MessageAdapter(private var messageList: ArrayList<Message>) :
     RecyclerView.Adapter<MessageAdapter.MyViewHolder>() {
@@ -31,18 +32,29 @@ class MessageAdapter(private var messageList: ArrayList<Message>) :
                     llRightChatView.toGone()
                     llLeftChatView.toShow()
                     progressTyping.toShow()
+                    ivImage.toGone()
                 }
                 MessageState.ME -> {
                     llLeftChatView.toGone()
                     llRightChatView.toShow()
                     progressTyping.toGone()
+                    ivImage.toGone()
                     tvRightChat.text = item.message
                 }
                 else -> {
                     llRightChatView.toGone()
-                    llLeftChatView.toShow()
                     progressTyping.toGone()
-                    tvLeftChat.text = item.message
+                    if (item.isImage) {
+                        Glide.with(root.context).load(item.message).into(binding.ivImage)
+                        ivImage.toShow()
+                        llLeftChatView.toGone()
+                        tvLeftChat.toGone()
+                    } else {
+                        llLeftChatView.toShow()
+                        tvLeftChat.toShow()
+                        tvLeftChat.text = item.message
+                        ivImage.toGone()
+                    }
                 }
             }
         }
