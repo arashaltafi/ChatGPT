@@ -9,22 +9,26 @@ class DialogRepository @Inject constructor(
     private val messengerDao: MessengerDao
 ) : BaseRepository() {
 
-    fun insert(dialogEntity: DialogEntity) {
+    fun insertDialog(dialogEntity: DialogEntity) {
         messengerDao.insertDialog(dialogEntity)
     }
 
-    fun update(dialogEntity: DialogEntity) {
+    fun updateDialog(dialogEntity: DialogEntity) {
         messengerDao.updateDialog(dialogEntity)
     }
 
-    fun delete(id: Long) {
+    fun deleteDialogById(id: Long) {
         messengerDao.deleteDialogById(id)
     }
 
-    fun delete(dialogEntity: DialogEntity) {
+    fun deleteDialog(dialogEntity: DialogEntity) {
         messengerDao.deleteDialog(dialogEntity)
     }
 
-    fun getAll(): List<DialogEntity> = messengerDao.getAllDialog()
+    fun getDialogById(id: Long) = messengerDao.getDialogById(id)
+
+    fun getLastDialogId() = messengerDao.getLastDialogId()
+
+    fun getAllDialog(): List<DialogEntity> = messengerDao.getAllDialog()
 
 }

@@ -10,13 +10,12 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.arash.altafi.chatgptsimple.BuildConfig
 import com.arash.altafi.chatgptsimple.R
 import com.arash.altafi.chatgptsimple.domain.provider.local.DialogEntity
-import com.arash.altafi.chatgptsimple.domain.provider.local.MessengerDao
-import com.arash.altafi.chatgptsimple.domain.provider.local.MessengerDatabase
 import com.arash.altafi.chatgptsimple.databinding.ActivityChatBinding
 import com.arash.altafi.chatgptsimple.domain.model.Message
 import com.arash.altafi.chatgptsimple.domain.model.MessageState
@@ -24,6 +23,7 @@ import com.arash.altafi.chatgptsimple.ext.isDarkTheme
 import com.arash.altafi.chatgptsimple.ext.toGone
 import com.arash.altafi.chatgptsimple.ext.toShow
 import com.arash.altafi.chatgptsimple.ext.toast
+import com.arash.altafi.chatgptsimple.ui.dialog.DialogViewModel
 import com.arash.altafi.chatgptsimple.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -46,8 +46,8 @@ class ChatActivity : AppCompatActivity() {
         ActivityChatBinding.inflate(layoutInflater)
     }
 
-    private var messengerDatabase: MessengerDatabase? = null
-    private var messengerDao: MessengerDao? = null
+    private val viewModel: DialogViewModel by viewModels()
+
     private var dialogId: Long = -1L
 
     private var messageList: ArrayList<Message> = arrayListOf()
@@ -83,18 +83,15 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun init() = binding.apply {
-        messengerDatabase = MessengerDatabase.getAppDataBase(this@ChatActivity)
-        messengerDao = messengerDatabase?.MessengerDao()
-
         dialogId = intent.getLongExtra("DialogId", -1)
         if (dialogId != -1L) {
-            messengerDao?.getDialogById(dialogId)
+            viewModel.getDialogById(dialogId)
         } else {
             val dialogEntity = DialogEntity()
             dialogEntity.id = getLastIdOfDB() + 1
             dialogEntity.message = welcomeMessage
             dialogEntity.messageCount = 1
-            messengerDao?.insertDialog(dialogEntity)
+            viewModel.insertDialog(dialogEntity)
         }
 
         //first time (before change network)
@@ -147,7 +144,7 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
-    private fun getLastIdOfDB() = (messengerDao?.getLastDialogId() ?: 1)
+    private fun getLastIdOfDB() = viewModel.getLastDialogId()
 
     private fun popupWindow(view: View) {
         val list = mutableListOf(
@@ -165,7 +162,7 @@ class ChatActivity : AppCompatActivity() {
                     R.drawable.ic_baseline_delete_24,
                     getString(R.string.delete)
                 ) {
-                    messengerDao?.deleteDialogById(dialogId)
+                    viewModel.deleteDialogById(dialogId)
                     finish()
                 }
             )
@@ -202,8 +199,8 @@ class ChatActivity : AppCompatActivity() {
                 val dialogEntity = DialogEntity()
                 dialogEntity.id = getLastIdOfDB()
                 dialogEntity.message = message
-                dialogEntity.messageCount = (messengerDao?.getAllDialog()?.size ?: 0) + 1 //fixme
-                messengerDao?.updateDialog(dialogEntity)
+                dialogEntity.messageCount = viewModel.getAllDialog().size + 1 //fixme
+                viewModel.updateDialog(dialogEntity)
             }
         }
     }

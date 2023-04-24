@@ -1,9 +1,6 @@
 package com.arash.altafi.chatgptsimple.ui.dialog
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.arash.altafi.chatgptsimple.base.BaseViewModel
-import com.arash.altafi.chatgptsimple.domain.model.ImageResponseBody
 import com.arash.altafi.chatgptsimple.domain.provider.local.DialogEntity
 import com.arash.altafi.chatgptsimple.domain.repository.DialogRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,30 +11,26 @@ class DialogViewModel @Inject constructor(
     private val dialogRepository: DialogRepository
 ) : BaseViewModel() {
 
-    private val _liveDataImage = MutableLiveData<ImageResponseBody>()
-    val liveDataImage: LiveData<ImageResponseBody>
-        get() = _liveDataImage
-
-    fun generateImage() {
-        dialogRepository.getAll()
+    fun insertDialog(dialogEntity: DialogEntity) {
+        dialogRepository.insertDialog(dialogEntity)
     }
 
-    fun insert(dialogEntity: DialogEntity) {
-        dialogRepository.insert(dialogEntity)
+    fun updateDialog(dialogEntity: DialogEntity) {
+        dialogRepository.updateDialog(dialogEntity)
     }
 
-    fun update(dialogEntity: DialogEntity) {
-        dialogRepository.update(dialogEntity)
+    fun deleteDialogById(id: Long) {
+        dialogRepository.deleteDialogById(id)
     }
 
-    fun deleteById(id: Long) {
-        dialogRepository.delete(id)
+    fun deleteDialog(dialogEntity: DialogEntity) {
+        dialogRepository.deleteDialog(dialogEntity)
     }
 
-    fun delete(dialogEntity: DialogEntity) {
-        dialogRepository.delete(dialogEntity)
-    }
+    fun getDialogById(id: Long): DialogEntity = dialogRepository.getDialogById(id)
 
-    fun getAll(): List<DialogEntity> = dialogRepository.getAll()
+    fun getLastDialogId(): Long = dialogRepository.getLastDialogId()
+
+    fun getAllDialog(): List<DialogEntity> = dialogRepository.getAllDialog()
 
 }

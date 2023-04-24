@@ -97,7 +97,7 @@ class DialogActivity : AppCompatActivity() {
     }
 
     private fun handleList() = binding.apply {
-        val dialogListEntity = viewModel.getAll()
+        val dialogListEntity = viewModel.getAllDialog()
         if (dialogListEntity.isEmpty()) {
             lottieEmpty.toShow()
         } else {
@@ -126,7 +126,7 @@ class DialogActivity : AppCompatActivity() {
                     R.drawable.ic_baseline_delete_24,
                     getString(R.string.delete)
                 ) {
-                    viewModel.delete(dialogModel)
+                    viewModel.deleteDialog(dialogModel)
                     handleList()
                     toast("SuccessFully Deleted")
                 }
