@@ -2,6 +2,7 @@ package com.arash.altafi.chatgptsimple.ui.image
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
@@ -123,6 +124,13 @@ class ImageSearchActivity : AppCompatActivity() {
 
     private fun loadImage(url: String) {
         Glide.with(this).load(url).into(binding.ivShow)
+
+        binding.ivShow.setOnClickListener {
+            val intent = Intent(this, ImageActivity::class.java).apply {
+                putExtra("IMAGE_URL", url)
+            }
+            startActivity(intent)
+        }
     }
 
     private fun checkNetWork() = NetworkUtils.isConnected(this@ImageSearchActivity)
