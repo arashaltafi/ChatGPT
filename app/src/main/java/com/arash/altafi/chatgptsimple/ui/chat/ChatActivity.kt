@@ -2,6 +2,7 @@ package com.arash.altafi.chatgptsimple.ui.chat
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.Network
@@ -28,6 +29,7 @@ import com.arash.altafi.chatgptsimple.domain.model.chat.Message
 import com.arash.altafi.chatgptsimple.domain.model.chat.MessageState
 import com.arash.altafi.chatgptsimple.ext.*
 import com.arash.altafi.chatgptsimple.ui.dialog.DialogViewModel
+import com.arash.altafi.chatgptsimple.ui.image.ImageActivity
 import com.arash.altafi.chatgptsimple.ui.image.ImageViewModel
 import com.arash.altafi.chatgptsimple.utils.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -52,7 +54,7 @@ class ChatActivity : AppCompatActivity() {
     private var messageList: ArrayList<Message> = arrayListOf()
     private lateinit var messageAdapter: MessageAdapter
 
-    private val welcomeMessage = "Hi, How may I assist you today?"
+    private val welcomeMessage = "test test test"
 
     private var networkConnection: ((connected: Boolean) -> Unit)? = null
 
@@ -105,9 +107,19 @@ class ChatActivity : AppCompatActivity() {
 
         rlRoot.background = background
 
+        edtMessage.requestFocus()
+
         messageAdapter = MessageAdapter(messageList)
         rvChat.adapter = messageAdapter
-        addToChat(welcomeMessage, MessageState.BOT, false)
+
+        addToChat(welcomeMessage, MessageState.BOT_TEXT)
+
+        messageAdapter.onClickImageListener = {
+            val intent = Intent(this@ChatActivity, ImageActivity::class.java).apply {
+                putExtra("IMAGE_URL", it)
+            }
+            startActivity(intent)
+        }
 
         btnSend.setOnClickListener {
             if (checkNetWork()) {
@@ -118,7 +130,7 @@ class ChatActivity : AppCompatActivity() {
                     edtMessage.error = "Please Write Your Question"
                 } else {
                     it.hideKeyboard()
-                    addToChat(question, MessageState.ME, false)
+                    addToChat(question, MessageState.ME)
                     callAPI(question, question.startsWith(IMAGE))
                 }
             } else {
@@ -246,8 +258,8 @@ class ChatActivity : AppCompatActivity() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun addToChat(message: String, sentBy: MessageState, isImage: Boolean) {
-        messageList.add(Message(message, sentBy, isImage))
+    private fun addToChat(message: String, sentBy: MessageState) {
+        messageList.add(Message(message, sentBy))
         messageAdapter.notifyDataSetChanged()
         binding.rvChat.smoothScrollToPosition(messageAdapter.itemCount)
 
@@ -260,27 +272,31 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
-    private fun addResponse(response: String, isImage: Boolean) {
+    private fun addResponse(response: String, isImage: Boolean) = binding.apply {
         messageList.removeAt(messageList.size - 1)
-        addToChat(response, MessageState.BOT, isImage)
-        binding.tvToolbarState.toGone()
-        binding.btnSend.isClickable = true
+        addToChat(response, if (isImage) MessageState.BOT_IMAGE else MessageState.BOT_TEXT)
+        tvToolbarState.toGone()
+        btnSend.toShow()
+        progressBar.toHide()
     }
 
     private fun callAPI(question: String, isImage: Boolean) {
-        binding.btnSend.isClickable = false
+        binding.apply {
+            btnSend.toHide()
+            progressBar.toShow()
+
+            tvToolbarState.apply {
+                text = if (isImage) "Sending Image... " else "Typing... "
+                toShow()
+            }
+        }
+
         messageList.add(
             Message(
                 if (isImage) "Sending Image... " else "Typing... ",
-                MessageState.TYPING,
-                false
+                if (isImage) MessageState.SENDING_IMAGE else MessageState.TYPING
             )
         )
-
-        binding.tvToolbarState.apply {
-            text = if (isImage) "Sending Image... " else "Typing... "
-            toShow()
-        }
 
         if (isImage) {
             imageViewModel.generateImage(question.substringAfter(IMAGE).trim())

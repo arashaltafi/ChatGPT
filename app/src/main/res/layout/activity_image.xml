@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.image.ImageActivity">
+
+    <com.otaliastudios.zoom.ZoomImageView
+        android:id="@+id/ivImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="0dp"
+        android:scrollbars="vertical|horizontal"
+        app:alignment="center"
+        app:animationDuration="280"
+        app:flingEnabled="true"
+        app:horizontalPanEnabled="true"
+        app:maxZoom="1"
+        app:maxZoomType="zoom"
+        app:minZoom="0.9"
+        app:minZoomType="zoom"
+        app:oneFingerScrollEnabled="true"
+        app:overPinchable="true"
+        app:overScrollHorizontal="false"
+        app:overScrollVertical="false"
+        app:scrollEnabled="true"
+        app:threeFingersScrollEnabled="false"
+        app:transformation="centerInside"
+        app:transformationGravity="center"
+        app:twoFingersScrollEnabled="true"
+        app:verticalPanEnabled="true"
+        app:zoomEnabled="true" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/ivDownload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@color/black"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/baseline_download_24" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

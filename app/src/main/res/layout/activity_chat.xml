@@ -119,7 +119,7 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:stackFromEnd="true"
             tools:itemCount="5"
-            tools:listitem="@layout/chat_item" />
+            tools:listitem="@layout/item_text_recevie" />
 
         <RelativeLayout
             android:id="@+id/rlBottom"
@@ -154,6 +154,16 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:padding="8dp"
                 android:src="@drawable/ic_baseline_send_24" />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="10dp"
+                android:padding="8dp"
+                android:visibility="gone" />
 
         </RelativeLayout>
 
