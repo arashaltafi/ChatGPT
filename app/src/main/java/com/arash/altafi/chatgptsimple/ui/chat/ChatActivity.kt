@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.Spannable
 import android.text.TextWatcher
+import android.text.style.BackgroundColorSpan
 import android.text.style.ForegroundColorSpan
 import android.view.Gravity
 import android.view.View
@@ -112,13 +113,13 @@ class ChatActivity : AppCompatActivity() {
             if (checkNetWork()) {
                 val question = edtMessage.text.toString().trim()
                 edtMessage.setText("")
-                if (question.isEmpty()) {
+                if (question.isEmpty() || question.substringAfter(IMAGE).trim().isEmpty()) {
                     toast("Please Write Your Question")
                     edtMessage.error = "Please Write Your Question"
                 } else {
                     it.hideKeyboard()
                     addToChat(question, MessageState.ME, false)
-                    callAPI(question, question.startsWith("image/"))
+                    callAPI(question, question.startsWith(IMAGE))
                 }
             } else {
                 toast("Please Turn On Your Internet!!!")
@@ -130,43 +131,64 @@ class ChatActivity : AppCompatActivity() {
         }
 
         edtMessage.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // This method is called before the text is changed
-            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 // Get the current text in the EditText
                 val text = edtMessage.text?.toString() ?: return
                 val spannable = edtMessage.editableText
 
-                // Check if the text contains the string "image/"
-                if (text.contains("image/")) {
-                    // Find the index of the start of the "image/" string
-                    val startIndex = text.indexOf("image/")
+                // Delete "/image" with backSpace
+                if (before == 1 && s.toString().endsWith(IMAGE)) {
+                    edtMessage.setText(s.toString().substring(0, s!!.length - IMAGE.length))
+                    edtMessage.setSelection(edtMessage.length())
+                }
 
-                    // Find the index of the end of the "image/" string
-                    val endIndex = startIndex + "image/".length
+                // Check if the text contains the string "/image"
+                if (text.startsWith(IMAGE)) {
+                    // Find the index of the start of the "/image" string
+                    val startIndex = text.indexOf(IMAGE)
 
-                    // Set the color of the "image/" string to red
+                    // Find the index of the end of the "/image" string
+                    val endIndex = startIndex + IMAGE.length
+
+                    // Set the color of the "/image" string to red
                     spannable.setSpan(
                         ForegroundColorSpan(Color.RED),
                         startIndex,
                         endIndex,
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
-                } else {
-                    // Remove the color if the "image/" string is no longer in the text
+
+                    spannable.setSpan(
+                        BackgroundColorSpan(Color.YELLOW),
+                        text.indexOf(IMAGE),
+                        startIndex + IMAGE.length,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+
+                } else { // Remove the color if the "/image" string is no longer in the text
                     val spans =
                         spannable.getSpans(0, spannable.length, ForegroundColorSpan::class.java)
                     for (span in spans) {
                         spannable.removeSpan(span)
                     }
+
+                    val foregroundSpans =
+                        spannable.getSpans(0, spannable.length, ForegroundColorSpan::class.java)
+                    for (span in foregroundSpans) {
+                        spannable.removeSpan(span)
+                    }
+
+                    val backgroundSpans =
+                        spannable.getSpans(0, spannable.length, BackgroundColorSpan::class.java)
+                    for (span in backgroundSpans) {
+                        spannable.removeSpan(span)
+                    }
                 }
             }
 
-            override fun afterTextChanged(s: Editable?) {
-                // This method is called after the text is changed
-            }
+            override fun afterTextChanged(s: Editable?) {}
         })
 
         edtMessage.setOnEditorActionListener { _, actionId, _ ->
@@ -261,7 +283,7 @@ class ChatActivity : AppCompatActivity() {
         }
 
         if (isImage) {
-            imageViewModel.generateImage(question.substringAfter("image/"))
+            imageViewModel.generateImage(question.substringAfter(IMAGE).trim())
         } else {
             chatViewModel.chatMessageList.add(
                 ChatPostBody.Message(
@@ -311,6 +333,10 @@ class ChatActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         unregisterNetworkConnectivity(this)
+    }
+
+    private companion object {
+        const val IMAGE = "/image"
     }
 
 }
