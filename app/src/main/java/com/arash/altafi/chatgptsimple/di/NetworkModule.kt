@@ -1,6 +1,7 @@
 package com.arash.altafi.chatgptsimple.di
 
 import com.arash.altafi.chatgptsimple.BuildConfig
+import com.arash.altafi.chatgptsimple.utils.Cache
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
@@ -64,7 +65,7 @@ object NetworkModule {
     @CHATOpenAI
     @Singleton
     @Provides
-    fun provideChatOkHttp() = OkHttpClient.Builder()
+    fun provideChatOkHttp(cache: Cache) = OkHttpClient.Builder()
         .writeTimeout(10, TimeUnit.SECONDS)
         .connectTimeout(10, TimeUnit.SECONDS)
         .readTimeout(10, TimeUnit.SECONDS)
@@ -72,7 +73,9 @@ object NetworkModule {
         .addInterceptor { chain ->
             val original = chain.request()
             val request = original.newBuilder().run {
-                addHeader("Authorization", "Bearer ${BuildConfig.TOKEN}")
+                if (cache.tokenAES.isNotEmpty()) {
+                    addHeader("Authorization", "Bearer ${cache.tokenAES}")
+                }
                 build()
             }
             chain.proceed(request)
@@ -83,7 +86,7 @@ object NetworkModule {
     @IMAGEOpenAI
     @Singleton
     @Provides
-    fun provideImageOkHttp() = OkHttpClient.Builder()
+    fun provideImageOkHttp(cache: Cache) = OkHttpClient.Builder()
         .writeTimeout(10, TimeUnit.SECONDS)
         .connectTimeout(10, TimeUnit.SECONDS)
         .readTimeout(10, TimeUnit.SECONDS)
@@ -91,7 +94,9 @@ object NetworkModule {
         .addInterceptor { chain ->
             val original = chain.request()
             val request = original.newBuilder().run {
-                addHeader("Authorization", "Bearer ${BuildConfig.TOKEN}")
+                if (cache.tokenAES.isNotEmpty()) {
+                    addHeader("Authorization", "Bearer ${cache.tokenAES}")
+                }
                 build()
             }
             chain.proceed(request)

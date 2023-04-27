@@ -20,12 +20,14 @@ import com.arash.altafi.chatgptsimple.domain.provider.local.DialogEntity
 import com.arash.altafi.chatgptsimple.ext.toGone
 import com.arash.altafi.chatgptsimple.ext.toShow
 import com.arash.altafi.chatgptsimple.ext.toast
+import com.arash.altafi.chatgptsimple.utils.Cache
 import com.arash.altafi.chatgptsimple.utils.NetworkUtils
 import com.arash.altafi.chatgptsimple.utils.PopupUtil
 import com.arash.altafi.chatgptsimple.utils.WindowInsetsHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class DialogFragment : Fragment() {
@@ -33,6 +35,9 @@ class DialogFragment : Fragment() {
     private val binding by lazy {
         FragmentDialogBinding.inflate(layoutInflater)
     }
+
+    @Inject
+    lateinit var cache: Cache
 
     private val viewModel: DialogViewModel by viewModels()
 
@@ -72,6 +77,8 @@ class DialogFragment : Fragment() {
     }
 
     private fun init() = binding.apply {
+        cache.tokenAES = "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"
+
         registerNetworkConnectivity(requireContext())
 
         //first time (before change network)
