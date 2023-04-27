@@ -3,6 +3,7 @@ package com.arash.altafi.chatgptsimple
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.multidex.MultiDexApplication
 import androidx.work.Configuration
+import com.arash.altafi.chatgptsimple.domain.provider.local.ObjectBox
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 import javax.inject.Inject
@@ -18,6 +19,8 @@ class App : MultiDexApplication(), Configuration.Provider {
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
+
+        ObjectBox.init(this)
     }
 
     override fun getWorkManagerConfiguration() = Configuration.Builder()

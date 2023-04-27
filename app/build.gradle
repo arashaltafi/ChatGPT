@@ -5,6 +5,7 @@ plugins {
     id 'kotlin-parcelize'
     id 'dagger.hilt.android.plugin'
     id 'androidx.navigation.safeargs.kotlin'
+    id "io.objectbox"
 }
 
 android {
@@ -158,6 +159,10 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:2.5.1"
     kapt "androidx.room:room-compiler:2.5.1"
     implementation "androidx.room:room-ktx:2.5.1"
+
+    //ObjectBox
+    implementation "io.objectbox:objectbox-kotlin:3.5.1"
+    kapt "io.objectbox:objectbox-processor:3.5.1"
 
     //Zoom Image
     implementation "com.otaliastudios:zoomlayout:1.9.0"

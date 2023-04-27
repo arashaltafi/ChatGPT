@@ -29,7 +29,7 @@ import com.arash.altafi.chatgptsimple.domain.model.chat.ChatPostBody
 import com.arash.altafi.chatgptsimple.domain.model.chat.ChatRole
 import com.arash.altafi.chatgptsimple.domain.model.chat.Message
 import com.arash.altafi.chatgptsimple.domain.model.chat.MessageState
-import com.arash.altafi.chatgptsimple.domain.provider.local.DialogEntity
+import com.arash.altafi.chatgptsimple.domain.provider.local.DialogEntityObjectBox
 import com.arash.altafi.chatgptsimple.ext.*
 import com.arash.altafi.chatgptsimple.ui.dialog.DialogViewModel
 import com.arash.altafi.chatgptsimple.ui.image.ImageViewModel
@@ -99,11 +99,11 @@ class ChatFragment : Fragment() {
         if (args.dialogId != -1L) {
             dialogViewModel.getDialogById(args.dialogId)
         } else {
-            val dialogEntity = DialogEntity()
-            dialogEntity.id = getLastIdOfDB() + 1
+            val dialogEntity = DialogEntityObjectBox()
+            dialogEntity.dialogId = getLastIdOfDB() + 1
             dialogEntity.message = welcomeMessage
-            dialogEntity.messageCount = 1
-            dialogViewModel.saveDialog(dialogEntity)
+            dialogEntity.sentBy = MessageState.BOT_TEXT.name
+            dialogViewModel.saveDialogObjectBox(dialogEntity)
         }
 
         //first time (before change network)
@@ -232,7 +232,7 @@ class ChatFragment : Fragment() {
         }
     }
 
-    private fun getLastIdOfDB() = dialogViewModel.getLastDialogId()
+    private fun getLastIdOfDB() = dialogViewModel.getLastDialogIdObjectBox()
 
     private fun popupWindow(view: View) {
         val list = mutableListOf(
@@ -283,11 +283,11 @@ class ChatFragment : Fragment() {
         binding.rvChat.smoothScrollToPosition(messageAdapter.itemCount)
 
         if (sentBy != MessageState.TYPING && message != welcomeMessage) {
-            val dialogEntity = DialogEntity()
-            dialogEntity.id = getLastIdOfDB()
+            val dialogEntity = DialogEntityObjectBox()
+            dialogEntity.dialogId = getLastIdOfDB()
             dialogEntity.message = message
-            dialogEntity.messageCount = dialogViewModel.getAllDialog().size + 1 //fixme
-            dialogViewModel.updateDialog(dialogEntity)
+            dialogEntity.messageCount = dialogViewModel.getAllDialog().size
+            dialogViewModel.updateDialogObjectBox(dialogEntity)
         }
     }
 

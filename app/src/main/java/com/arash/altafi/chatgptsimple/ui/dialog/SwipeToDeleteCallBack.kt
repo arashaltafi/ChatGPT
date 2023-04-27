@@ -11,7 +11,7 @@ abstract class SwipeToDeleteCallbackObjectBox(
     ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        dialogViewModel.deleteDialog(adapter.getDialogEntity(viewHolder.adapterPosition))
+        dialogViewModel.deleteDialogObjectBox(adapter.getDialogEntity(viewHolder.adapterPosition))
         runAfter(200, {
             dialogViewModel.getAllDialog()
         })

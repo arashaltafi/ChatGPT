@@ -18,7 +18,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.arash.altafi.chatgptsimple.BuildConfig
 import com.arash.altafi.chatgptsimple.R
-import com.arash.altafi.chatgptsimple.domain.provider.local.DialogEntity
+import com.arash.altafi.chatgptsimple.domain.provider.local.DialogEntityObjectBox
 import com.arash.altafi.chatgptsimple.ext.toGone
 import com.arash.altafi.chatgptsimple.ext.toShow
 import com.arash.altafi.chatgptsimple.ext.toast
@@ -122,7 +122,7 @@ class DialogFragment : Fragment() {
     }
 
     private fun handleList() = binding.apply {
-        val dialogListEntity = viewModel.getAllDialog()
+        val dialogListEntity = viewModel.getAllDialogObjectBox()
         if (dialogListEntity.isEmpty()) {
             lottieEmpty.toShow()
         } else {
@@ -147,7 +147,7 @@ class DialogFragment : Fragment() {
         }
     }
 
-    private fun popupWindowAdapter(view: View, dialogModel: DialogEntity) {
+    private fun popupWindowAdapter(view: View, dialogModel: DialogEntityObjectBox) {
         PopupUtil.showPopup(
             view,
             listOf(
@@ -155,7 +155,7 @@ class DialogFragment : Fragment() {
                     R.drawable.ic_baseline_delete_24,
                     getString(R.string.delete)
                 ) {
-                    viewModel.deleteDialog(dialogModel)
+                    viewModel.deleteDialogObjectBox(dialogModel)
                     handleList()
                     toast("SuccessFully Deleted")
                 }
