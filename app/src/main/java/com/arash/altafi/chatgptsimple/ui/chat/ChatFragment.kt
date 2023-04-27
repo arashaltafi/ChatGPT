@@ -103,7 +103,7 @@ class ChatFragment : Fragment() {
             dialogEntity.id = getLastIdOfDB() + 1
             dialogEntity.message = welcomeMessage
             dialogEntity.messageCount = 1
-            dialogViewModel.insertDialog(dialogEntity)
+            dialogViewModel.saveDialog(dialogEntity)
         }
 
         //first time (before change network)

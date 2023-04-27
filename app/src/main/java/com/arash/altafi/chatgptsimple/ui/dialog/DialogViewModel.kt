@@ -11,7 +11,7 @@ class DialogViewModel @Inject constructor(
     private val dialogRepository: DialogRepository
 ) : BaseViewModel() {
 
-    fun insertDialog(dialogEntity: DialogEntity) {
+    fun saveDialog(dialogEntity: DialogEntity) {
         dialogRepository.insertDialog(dialogEntity)
     }
 

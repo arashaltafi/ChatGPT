@@ -24,6 +24,8 @@ class DialogAdapter(private var dialogList: ArrayList<DialogEntity>) :
 
     override fun getItemCount(): Int = dialogList.size
 
+    fun getDialogEntity(position: Int): DialogEntity = dialogList[position]
+
     inner class ViewHolder(private val binding: DialogItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 

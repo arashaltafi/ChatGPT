@@ -15,6 +15,7 @@ import com.arash.altafi.chatgptsimple.databinding.FragmentDialogBinding
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import com.arash.altafi.chatgptsimple.BuildConfig
 import com.arash.altafi.chatgptsimple.R
 import com.arash.altafi.chatgptsimple.domain.provider.local.DialogEntity
@@ -42,7 +43,7 @@ class DialogFragment : Fragment() {
 
     private val viewModel: DialogViewModel by viewModels()
 
-    private var dialogAdapter: DialogAdapter? = null
+    private lateinit var dialogAdapter: DialogAdapter
 
     private var networkConnection: ((connected: Boolean) -> Unit)? = null
 
@@ -128,16 +129,21 @@ class DialogFragment : Fragment() {
             lottieEmpty.toGone()
             dialogAdapter = DialogAdapter(ArrayList(dialogListEntity))
             rvDialogs.adapter = dialogAdapter
-        }
 
-        dialogAdapter?.onClickListener = {
-            findNavController().navigate(
-                DialogFragmentDirections.actionDialogFragmentToChatFragment(it.id!!)
-            )
-        }
+            val swipeHandler =
+                object : SwipeToDeleteCallbackObjectBox(viewModel, dialogAdapter) {}
+            val itemTouchHelper = ItemTouchHelper(swipeHandler)
+            itemTouchHelper.attachToRecyclerView(rvDialogs)
 
-        dialogAdapter?.onLongClickListener = { view, dialogModel ->
-            popupWindowAdapter(view, dialogModel)
+            dialogAdapter.onClickListener = {
+                findNavController().navigate(
+                    DialogFragmentDirections.actionDialogFragmentToChatFragment(it.id!!)
+                )
+            }
+
+            dialogAdapter.onLongClickListener = { view, dialogModel ->
+                popupWindowAdapter(view, dialogModel)
+            }
         }
     }
 
