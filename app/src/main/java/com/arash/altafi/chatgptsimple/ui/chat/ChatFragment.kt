@@ -2,7 +2,6 @@ package com.arash.altafi.chatgptsimple.ui.chat
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.Network
@@ -15,46 +14,51 @@ import android.text.TextWatcher
 import android.text.style.BackgroundColorSpan
 import android.text.style.ForegroundColorSpan
 import android.view.Gravity
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.arash.altafi.chatgptsimple.R
-import com.arash.altafi.chatgptsimple.domain.provider.local.DialogEntity
-import com.arash.altafi.chatgptsimple.databinding.ActivityChatBinding
+import com.arash.altafi.chatgptsimple.databinding.FragmentChatBinding
 import com.arash.altafi.chatgptsimple.domain.model.chat.ChatPostBody
 import com.arash.altafi.chatgptsimple.domain.model.chat.ChatRole
 import com.arash.altafi.chatgptsimple.domain.model.chat.Message
 import com.arash.altafi.chatgptsimple.domain.model.chat.MessageState
+import com.arash.altafi.chatgptsimple.domain.provider.local.DialogEntity
 import com.arash.altafi.chatgptsimple.ext.*
 import com.arash.altafi.chatgptsimple.ui.dialog.DialogViewModel
-import com.arash.altafi.chatgptsimple.ui.image.ImageActivity
 import com.arash.altafi.chatgptsimple.ui.image.ImageViewModel
-import com.arash.altafi.chatgptsimple.utils.*
+import com.arash.altafi.chatgptsimple.utils.NetworkUtils
+import com.arash.altafi.chatgptsimple.utils.PopupUtil
+import com.arash.altafi.chatgptsimple.utils.WindowInsetsHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import okhttp3.*
 
 @AndroidEntryPoint
-class ChatActivity : AppCompatActivity() {
+class ChatFragment : Fragment() {
 
     private val binding by lazy {
-        ActivityChatBinding.inflate(layoutInflater)
+        FragmentChatBinding.inflate(layoutInflater)
     }
+
+    private val args by navArgs<ChatFragmentArgs>()
 
     private val dialogViewModel: DialogViewModel by viewModels()
     private val chatViewModel: ChatViewModel by viewModels()
     private val imageViewModel: ImageViewModel by viewModels()
 
-    private var dialogId: Long = -1L
-
     private var messageList: ArrayList<Message> = arrayListOf()
     private lateinit var messageAdapter: MessageAdapter
 
-    private val welcomeMessage = "test test test"
+    private val welcomeMessage = "Hi, How may I assist you today?"
+    private var addWelcomeMessageOnce = true
 
     private var networkConnection: ((connected: Boolean) -> Unit)? = null
 
@@ -70,19 +74,30 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(binding.root)
-
-        registerNetworkConnectivity(this)
-        init()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initObserve()
+        init()
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        handleKeyboardSize()
+        registerNetworkConnectivity(requireContext())
+        return binding.root
+    }
+
+    private fun handleKeyboardSize() {
+        val windowInsetsHelper = WindowInsetsHelper(requireActivity().window, binding.root)
+        windowInsetsHelper.isFullScreen = false
+        windowInsetsHelper.isAutoResizeKeyboard = true
     }
 
     private fun init() = binding.apply {
-        dialogId = intent.getLongExtra("DialogId", -1)
-        if (dialogId != -1L) {
-            dialogViewModel.getDialogById(dialogId)
+        if (args.dialogId != -1L) {
+            dialogViewModel.getDialogById(args.dialogId)
         } else {
             val dialogEntity = DialogEntity()
             dialogEntity.id = getLastIdOfDB() + 1
@@ -100,10 +115,10 @@ class ChatActivity : AppCompatActivity() {
             }
         }
 
-        val background = if (isDarkTheme())
-            ContextCompat.getDrawable(this@ChatActivity, R.drawable.chat_bg_dark)
+        val background = if (requireActivity().isDarkTheme())
+            ContextCompat.getDrawable(requireContext(), R.drawable.chat_bg_dark)
         else
-            ContextCompat.getDrawable(this@ChatActivity, R.drawable.chat_bg_light)
+            ContextCompat.getDrawable(requireContext(), R.drawable.chat_bg_light)
 
         rlRoot.background = background
 
@@ -112,13 +127,17 @@ class ChatActivity : AppCompatActivity() {
         messageAdapter = MessageAdapter(messageList)
         rvChat.adapter = messageAdapter
 
-        addToChat(welcomeMessage, MessageState.BOT_TEXT)
+        if (addWelcomeMessageOnce) {
+            addToChat(welcomeMessage, MessageState.BOT_TEXT)
+            addWelcomeMessageOnce = false
+        }
 
         messageAdapter.onClickImageListener = {
-            val intent = Intent(this@ChatActivity, ImageActivity::class.java).apply {
-                putExtra("IMAGE_URL", it)
-            }
-            startActivity(intent)
+            findNavController().navigate(
+                ChatFragmentDirections.actionChatFragmentToImageFragment(
+                    it
+                )
+            )
         }
 
         btnSend.setOnClickListener {
@@ -221,18 +240,18 @@ class ChatActivity : AppCompatActivity() {
                 R.drawable.ic_baseline_arrow_back_24,
                 getString(R.string.back)
             ) {
-                finish()
+                findNavController().navigateUp()
             },
         )
 
-        if (dialogId != -1L) {
+        if (args.dialogId != -1L) {
             list.add(
                 PopupUtil.PopupItem(
                     R.drawable.ic_baseline_delete_24,
                     getString(R.string.delete)
                 ) {
-                    dialogViewModel.deleteDialogById(dialogId)
-                    finish()
+                    dialogViewModel.deleteDialogById(args.dialogId)
+                    findNavController().navigateUp()
                 }
             )
         }
@@ -245,14 +264,14 @@ class ChatActivity : AppCompatActivity() {
         )
     }
 
-    private fun checkNetWork() = NetworkUtils.isConnected(this@ChatActivity)
+    private fun checkNetWork() = NetworkUtils.isConnected(requireContext())
 
     @SuppressLint("ResourceAsColor")
     private fun changeIconStatus(isConnect: Boolean) {
         val red =
-            ContextCompat.getColor(this, R.color.dark_red)
+            ContextCompat.getColor(requireContext(), R.color.dark_red)
         val green =
-            ContextCompat.getColor(this, R.color.green)
+            ContextCompat.getColor(requireContext(), R.color.green)
         val color = if (isConnect) green else red
         binding.ivStatus.setColorFilter(color)
     }
@@ -312,15 +331,15 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun initObserve() {
-        chatViewModel.liveChatData.observe(this) {
+        chatViewModel.liveChatData.observe(viewLifecycleOwner) {
             addResponse(it.choices[0].message.content, false)
         }
 
-        chatViewModel.liveError.observe(this) {
+        chatViewModel.liveError.observe(viewLifecycleOwner) {
             addResponse("There is Was Error Please Send Again Later ...", false)
         }
 
-        imageViewModel.liveDataImage.observe(this) { response ->
+        imageViewModel.liveDataImage.observe(viewLifecycleOwner) { response ->
             response.data?.get(0)?.url?.let {
                 addResponse(it, true)
             }
@@ -348,7 +367,7 @@ class ChatActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        unregisterNetworkConnectivity(this)
+        unregisterNetworkConnectivity(requireContext())
     }
 
     private companion object {

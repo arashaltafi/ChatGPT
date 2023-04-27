@@ -18,19 +18,7 @@
         android:theme="@style/Theme.ChatGPTSimple"
         tools:targetApi="31">
         <activity
-            android:name=".ui.image.ImageActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.dialog.DialogActivity"
-            android:configChanges="uiMode"
-            android:exported="false" />
-        <activity
-            android:name=".ui.image.ImageSearchActivity"
-            android:configChanges="uiMode"
-            android:exported="false" />
-        <activity
-            android:name=".ui.chat.ChatActivity"
-            android:configChanges="uiMode"
+            android:name=".ui.main.MainActivity"
             android:exported="false" />
         <activity
             android:name=".ui.splash.SplashActivity"

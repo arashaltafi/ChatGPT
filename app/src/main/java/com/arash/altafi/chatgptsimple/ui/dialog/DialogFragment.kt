@@ -1,35 +1,37 @@
 package com.arash.altafi.chatgptsimple.ui.dialog
 
 import android.content.Context
-import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
 import android.view.View
-import androidx.activity.viewModels
+import android.view.ViewGroup
+import com.arash.altafi.chatgptsimple.databinding.FragmentDialogBinding
+import dagger.hilt.android.AndroidEntryPoint
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.arash.altafi.chatgptsimple.R
 import com.arash.altafi.chatgptsimple.domain.provider.local.DialogEntity
-import com.arash.altafi.chatgptsimple.databinding.ActivityDialogBinding
 import com.arash.altafi.chatgptsimple.ext.toGone
 import com.arash.altafi.chatgptsimple.ext.toShow
 import com.arash.altafi.chatgptsimple.ext.toast
-import com.arash.altafi.chatgptsimple.ui.chat.ChatActivity
-import com.arash.altafi.chatgptsimple.ui.image.ImageSearchActivity
-import com.arash.altafi.chatgptsimple.utils.*
-import dagger.hilt.android.AndroidEntryPoint
+import com.arash.altafi.chatgptsimple.utils.NetworkUtils
+import com.arash.altafi.chatgptsimple.utils.PopupUtil
+import com.arash.altafi.chatgptsimple.utils.WindowInsetsHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class DialogActivity : AppCompatActivity() {
+class DialogFragment : Fragment() {
 
     private val binding by lazy {
-        ActivityDialogBinding.inflate(layoutInflater)
+        FragmentDialogBinding.inflate(layoutInflater)
     }
 
     private val viewModel: DialogViewModel by viewModels()
@@ -50,15 +52,28 @@ class DialogActivity : AppCompatActivity() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(binding.root)
-
-        registerNetworkConnectivity(this)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         init()
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        handleKeyboardSize()
+        return binding.root
+    }
+
+    private fun handleKeyboardSize() {
+        val windowInsetsHelper = WindowInsetsHelper(requireActivity().window, binding.root)
+        windowInsetsHelper.isFullScreen = false
+        windowInsetsHelper.isAutoResizeKeyboard = false
+    }
+
     private fun init() = binding.apply {
+        registerNetworkConnectivity(requireContext())
+
         //first time (before change network)
         changeIconStatus(checkNetWork())
 
@@ -69,10 +84,9 @@ class DialogActivity : AppCompatActivity() {
         }
 
         flNewChat.setOnClickListener {
-            val intent = Intent(this@DialogActivity, ChatActivity::class.java).apply {
-                putExtra("DialogId", "-1")
-            }
-            startActivity(intent)
+            findNavController().navigate(
+                DialogFragmentDirections.actionDialogFragmentToChatFragment()
+            )
         }
 
         ivMore.setOnClickListener {
@@ -88,7 +102,9 @@ class DialogActivity : AppCompatActivity() {
                     R.drawable.ic_baseline_image_search_24,
                     getString(R.string.gpt_image)
                 ) {
-                    startActivity(Intent(this, ImageSearchActivity::class.java))
+                    findNavController().navigate(
+                        DialogFragmentDirections.actionDialogFragmentToImageSearchFragment()
+                    )
                 }
             ),
             Gravity.BOTTOM.or(Gravity.END),
@@ -107,10 +123,9 @@ class DialogActivity : AppCompatActivity() {
         }
 
         dialogAdapter?.onClickListener = {
-            val intent = Intent(this@DialogActivity, ChatActivity::class.java).apply {
-                putExtra("DialogId", it.id)
-            }
-            startActivity(intent)
+            findNavController().navigate(
+                DialogFragmentDirections.actionDialogFragmentToChatFragment(it.id!!)
+            )
         }
 
         dialogAdapter?.onLongClickListener = { view, dialogModel ->
@@ -136,7 +151,7 @@ class DialogActivity : AppCompatActivity() {
         )
     }
 
-    private fun checkNetWork() = NetworkUtils.isConnected(this@DialogActivity)
+    private fun checkNetWork() = NetworkUtils.isConnected(requireContext())
 
     private fun changeIconStatus(isConnect: Boolean) = binding.apply {
         val text = if (isConnect) R.string.app_name else R.string.connecting
@@ -164,7 +179,7 @@ class DialogActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        unregisterNetworkConnectivity(this)
+        unregisterNetworkConnectivity(requireContext())
     }
 
     override fun onResume() {

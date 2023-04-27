@@ -1,11 +1,10 @@
 package com.arash.altafi.chatgptsimple.ui.chat
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.arash.altafi.chatgptsimple.base.BaseViewModel
 import com.arash.altafi.chatgptsimple.domain.model.chat.ChatPostBody
 import com.arash.altafi.chatgptsimple.domain.model.chat.ChatResponseBody
 import com.arash.altafi.chatgptsimple.domain.repository.ChatRepository
+import com.arash.altafi.chatgptsimple.utils.liveData.SingleLiveData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -14,12 +13,12 @@ class ChatViewModel @Inject constructor(
     private val chatRepository: ChatRepository
 ) : BaseViewModel() {
 
-    private val _liveChatData = MutableLiveData<ChatResponseBody>()
-    val liveChatData: LiveData<ChatResponseBody>
+    private val _liveChatData = SingleLiveData<ChatResponseBody>()
+    val liveChatData: SingleLiveData<ChatResponseBody>
         get() = _liveChatData
 
-    private val _liveError = MutableLiveData<Boolean>()
-    val liveError: LiveData<Boolean>
+    private val _liveError = SingleLiveData<Boolean>()
+    val liveError: SingleLiveData<Boolean>
         get() = _liveError
 
     var chatMessageList = ArrayList<ChatPostBody.Message>()

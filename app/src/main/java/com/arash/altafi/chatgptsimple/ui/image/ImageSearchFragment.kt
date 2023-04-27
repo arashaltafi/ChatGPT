@@ -2,32 +2,35 @@ package com.arash.altafi.chatgptsimple.ui.image
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
 import android.os.Build
 import android.os.Bundle
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.arash.altafi.chatgptsimple.R
-import com.arash.altafi.chatgptsimple.databinding.ActivityImageSearchBinding
+import com.arash.altafi.chatgptsimple.databinding.FragmentImageSearchBinding
 import com.arash.altafi.chatgptsimple.ext.*
-import com.arash.altafi.chatgptsimple.utils.*
+import com.arash.altafi.chatgptsimple.utils.NetworkUtils
+import com.arash.altafi.chatgptsimple.utils.WindowInsetsHelper
 import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import okhttp3.*
 
 @AndroidEntryPoint
-class ImageSearchActivity : AppCompatActivity() {
+class ImageSearchFragment : Fragment() {
 
     private val binding by lazy {
-        ActivityImageSearchBinding.inflate(layoutInflater)
+        FragmentImageSearchBinding.inflate(layoutInflater)
     }
 
     private val viewModel: ImageViewModel by viewModels()
@@ -46,13 +49,25 @@ class ImageSearchActivity : AppCompatActivity() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(binding.root)
-
-        registerNetworkConnectivity(this)
-        init()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initObserve()
+        init()
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        handleKeyboardSize()
+        registerNetworkConnectivity(requireContext())
+        return binding.root
+    }
+
+    private fun handleKeyboardSize() {
+        val windowInsetsHelper = WindowInsetsHelper(requireActivity().window, binding.root)
+        windowInsetsHelper.isFullScreen = false
+        windowInsetsHelper.isAutoResizeKeyboard = false
     }
 
     private fun init() = binding.apply {
@@ -65,10 +80,10 @@ class ImageSearchActivity : AppCompatActivity() {
             }
         }
 
-        val background = if (isDarkTheme()) {
-            ContextCompat.getDrawable(this@ImageSearchActivity, R.drawable.chat_bg_dark)
+        val background = if (requireActivity().isDarkTheme()) {
+            ContextCompat.getDrawable(requireContext(), R.drawable.chat_bg_dark)
         } else {
-            ContextCompat.getDrawable(this@ImageSearchActivity, R.drawable.chat_bg_light)
+            ContextCompat.getDrawable(requireContext(), R.drawable.chat_bg_light)
         }
         root.background = background
 
@@ -104,7 +119,7 @@ class ImageSearchActivity : AppCompatActivity() {
     }
 
     private fun initObserve() {
-        viewModel.liveDataImage.observe(this) { response ->
+        viewModel.liveDataImage.observe(viewLifecycleOwner) { response ->
             response.data?.get(0)?.url?.let {
                 loadImage(it)
             }
@@ -126,21 +141,22 @@ class ImageSearchActivity : AppCompatActivity() {
         Glide.with(this).load(url).into(binding.ivShow)
 
         binding.ivShow.setOnClickListener {
-            val intent = Intent(this, ImageActivity::class.java).apply {
-                putExtra("IMAGE_URL", url)
-            }
-            startActivity(intent)
+            findNavController().navigate(
+                ImageSearchFragmentDirections.actionImageSearchFragmentToImageFragment(
+                    url
+                )
+            )
         }
     }
 
-    private fun checkNetWork() = NetworkUtils.isConnected(this@ImageSearchActivity)
+    private fun checkNetWork() = NetworkUtils.isConnected(requireContext())
 
     @SuppressLint("ResourceAsColor")
     private fun changeIconStatus(isConnect: Boolean) {
         val red =
-            ContextCompat.getColor(this, R.color.dark_red)
+            ContextCompat.getColor(requireContext(), R.color.dark_red)
         val green =
-            ContextCompat.getColor(this, R.color.green)
+            ContextCompat.getColor(requireContext(), R.color.green)
         val color = if (isConnect) green else red
         binding.ivStatus.setColorFilter(color)
     }
@@ -166,7 +182,7 @@ class ImageSearchActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        unregisterNetworkConnectivity(this)
+        unregisterNetworkConnectivity(requireContext())
     }
 
 }

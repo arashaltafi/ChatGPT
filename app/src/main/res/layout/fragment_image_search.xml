@@ -6,8 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/chat_bg_light"
     android:layoutDirection="ltr"
-    android:padding="20dp"
-    tools:context=".ui.image.ImageSearchActivity">
+    android:padding="20dp">
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/edtImage"

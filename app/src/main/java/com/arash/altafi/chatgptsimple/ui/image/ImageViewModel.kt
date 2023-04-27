@@ -1,11 +1,10 @@
 package com.arash.altafi.chatgptsimple.ui.image
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.arash.altafi.chatgptsimple.base.BaseViewModel
 import com.arash.altafi.chatgptsimple.domain.model.image.ImagePostBody
 import com.arash.altafi.chatgptsimple.domain.model.image.ImageResponseBody
 import com.arash.altafi.chatgptsimple.domain.repository.ImageRepository
+import com.arash.altafi.chatgptsimple.utils.liveData.SingleLiveData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -14,8 +13,8 @@ class ImageViewModel @Inject constructor(
     private val imageRepository: ImageRepository
 ) : BaseViewModel() {
 
-    private val _liveDataImage = MutableLiveData<ImageResponseBody>()
-    val liveDataImage: LiveData<ImageResponseBody>
+    private val _liveDataImage = SingleLiveData<ImageResponseBody>()
+    val liveDataImage: SingleLiveData<ImageResponseBody>
         get() = _liveDataImage
 
     fun generateImage(text: String) = callApi(
