@@ -20,6 +20,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "OPENAI_URL", '"https://api.openai.com/"')
+        buildConfigField("String", "TOKEN", '"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"')
     }
 
     signingConfigs {

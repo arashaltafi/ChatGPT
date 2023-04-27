@@ -15,6 +15,7 @@ import com.arash.altafi.chatgptsimple.databinding.FragmentDialogBinding
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.arash.altafi.chatgptsimple.BuildConfig
 import com.arash.altafi.chatgptsimple.R
 import com.arash.altafi.chatgptsimple.domain.provider.local.DialogEntity
 import com.arash.altafi.chatgptsimple.ext.toGone
@@ -77,7 +78,7 @@ class DialogFragment : Fragment() {
     }
 
     private fun init() = binding.apply {
-        cache.tokenAES = "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"
+        cache.tokenAES = BuildConfig.TOKEN
 
         registerNetworkConnectivity(requireContext())
 
