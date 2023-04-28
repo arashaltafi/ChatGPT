@@ -14,7 +14,6 @@ class DialogEntityObjectBox {
     @Index
     @Unique(onConflict = ConflictStrategy.REPLACE)
     var dialogId: Long? = null
-    var messageCount: Int? = null
-    var message: String? = null
-    var sentBy: String? = null
+    var message: List<String>? = null
+    var sentBy: List<String>? = null
 }

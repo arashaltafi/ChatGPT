@@ -16,7 +16,7 @@
         android:scaleType="fitCenter"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:shapeAppearance="@style/appearance.round.50"
+        app:shapeAppearance="@style/appearance.round.10"
         app:strokeColor="@color/purple"
         app:strokeWidth="5dp"
         tools:srcCompat="@drawable/robot" />

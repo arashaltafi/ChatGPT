@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.arash.altafi.chatgptsimple.databinding.DialogItemBinding
+import com.arash.altafi.chatgptsimple.domain.model.chat.MessageState
 import com.arash.altafi.chatgptsimple.domain.provider.local.DialogEntityObjectBox
 
 class DialogAdapter(private var dialogList: ArrayList<DialogEntityObjectBox>) :
@@ -39,8 +40,11 @@ class DialogAdapter(private var dialogList: ArrayList<DialogEntityObjectBox>) :
                 onClickListener?.invoke(dialogModel)
             }
 
-            tvTitle.text = dialogModel.message
-            tvBadge.text = dialogModel.messageCount.toString()
+            tvTitle.text = if (dialogModel.sentBy?.lastOrNull() == MessageState.BOT_IMAGE.name)
+                "image"
+            else
+                dialogModel.message?.lastOrNull().toString()
+            tvBadge.text = (dialogModel.message?.count() ?: 0).toString()
         }
     }
 

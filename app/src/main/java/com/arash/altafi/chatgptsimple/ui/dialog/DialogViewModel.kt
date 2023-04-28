@@ -3,13 +3,8 @@ package com.arash.altafi.chatgptsimple.ui.dialog
 import com.arash.altafi.chatgptsimple.base.BaseViewModel
 import com.arash.altafi.chatgptsimple.domain.provider.local.DialogEntity
 import com.arash.altafi.chatgptsimple.domain.provider.local.DialogEntityObjectBox
-import com.arash.altafi.chatgptsimple.domain.provider.local.DialogEntityObjectBox_
-import com.arash.altafi.chatgptsimple.domain.provider.local.ObjectBox
 import com.arash.altafi.chatgptsimple.domain.repository.DialogRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -49,12 +44,20 @@ class DialogViewModel @Inject constructor(
         dialogRepository.updateDialogObjectBox(dialogEntity)
     }
 
+    fun deleteDialogByIdObjectBox(id: Long) {
+        dialogRepository.deleteDialogByIdObjectBox(id)
+    }
+
     fun deleteDialogObjectBox(dialogEntity: DialogEntityObjectBox) {
         dialogRepository.deleteDialogObjectBox(dialogEntity)
     }
 
+    fun getDialogByIdObjectBox(id: Long): DialogEntityObjectBox? =
+        dialogRepository.getDialogByIdObjectBox(id)
+
     fun getLastDialogIdObjectBox(): Long = dialogRepository.getLastDialogIdObjectBox()
 
-    fun getAllDialogObjectBox(): List<DialogEntityObjectBox> = dialogRepository.getAllDialogObjectBox()
+    fun getAllDialogObjectBox(): List<DialogEntityObjectBox> =
+        dialogRepository.getAllDialogObjectBox()
 
 }

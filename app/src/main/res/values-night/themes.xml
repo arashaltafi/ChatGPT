@@ -24,6 +24,11 @@
         <item name="cornerSize">50%</item>
     </style>
 
+    <style name="appearance.round.10" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">10%</item>
+    </style>
+
     <style name="animation.popup_window" parent="">
         <item name="android:windowEnterAnimation">@anim/popup_in</item>
         <item name="android:windowExitAnimation">@anim/popup_out</item>

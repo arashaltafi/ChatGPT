@@ -27,7 +27,6 @@ import com.arash.altafi.chatgptsimple.R
 import com.arash.altafi.chatgptsimple.databinding.FragmentChatBinding
 import com.arash.altafi.chatgptsimple.domain.model.chat.ChatPostBody
 import com.arash.altafi.chatgptsimple.domain.model.chat.ChatRole
-import com.arash.altafi.chatgptsimple.domain.model.chat.Message
 import com.arash.altafi.chatgptsimple.domain.model.chat.MessageState
 import com.arash.altafi.chatgptsimple.domain.provider.local.DialogEntityObjectBox
 import com.arash.altafi.chatgptsimple.ext.*
@@ -54,12 +53,12 @@ class ChatFragment : Fragment() {
     private val chatViewModel: ChatViewModel by viewModels()
     private val imageViewModel: ImageViewModel by viewModels()
 
-    private var messageList: ArrayList<Message> = arrayListOf()
+    private var finalList: ArrayList<Pair<String, String>> = arrayListOf()
+    private var messageList: ArrayList<String> = arrayListOf()
+    private var sentByList: ArrayList<String> = arrayListOf()
     private lateinit var messageAdapter: MessageAdapter
 
     private val welcomeMessage = "Hi, How may I assist you today?"
-    private var addWelcomeMessageOnce = true
-
     private var networkConnection: ((connected: Boolean) -> Unit)? = null
 
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
@@ -97,12 +96,26 @@ class ChatFragment : Fragment() {
 
     private fun init() = binding.apply {
         if (args.dialogId != -1L) {
-            dialogViewModel.getDialogById(args.dialogId)
+            dialogViewModel.getDialogByIdObjectBox(args.dialogId)?.message?.forEach { message ->
+                messageList.add(message)
+            }
+            dialogViewModel.getDialogByIdObjectBox(args.dialogId)?.sentBy?.forEach { sentBy ->
+                sentByList.add(sentBy)
+            }
+
+            messageList.zip(sentByList).toCollection(finalList)
+
+            dialogViewModel.getDialogByIdObjectBox(args.dialogId)
         } else {
+            finalList.add(Pair(welcomeMessage, MessageState.BOT_TEXT.name))
+            messageList.add(welcomeMessage)
+            sentByList.add(MessageState.BOT_TEXT.name)
+
             val dialogEntity = DialogEntityObjectBox()
             dialogEntity.dialogId = getLastIdOfDB() + 1
-            dialogEntity.message = welcomeMessage
-            dialogEntity.sentBy = MessageState.BOT_TEXT.name
+            dialogEntity.message = messageList
+            dialogEntity.sentBy = sentByList
+
             dialogViewModel.saveDialogObjectBox(dialogEntity)
         }
 
@@ -124,13 +137,8 @@ class ChatFragment : Fragment() {
 
         edtMessage.requestFocus()
 
-        messageAdapter = MessageAdapter(messageList)
+        messageAdapter = MessageAdapter(finalList)
         rvChat.adapter = messageAdapter
-
-        if (addWelcomeMessageOnce) {
-            addToChat(welcomeMessage, MessageState.BOT_TEXT)
-            addWelcomeMessageOnce = false
-        }
 
         messageAdapter.onClickImageListener = {
             findNavController().navigate(
@@ -250,7 +258,7 @@ class ChatFragment : Fragment() {
                     R.drawable.ic_baseline_delete_24,
                     getString(R.string.delete)
                 ) {
-                    dialogViewModel.deleteDialogById(args.dialogId)
+                    dialogViewModel.deleteDialogByIdObjectBox(args.dialogId)
                     findNavController().navigateUp()
                 }
             )
@@ -278,21 +286,26 @@ class ChatFragment : Fragment() {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun addToChat(message: String, sentBy: MessageState) {
-        messageList.add(Message(message, sentBy))
+        finalList.add(Pair(message, sentBy.name))
+        sentByList.add(sentBy.name)
+        messageList.add(message)
+
         messageAdapter.notifyDataSetChanged()
         binding.rvChat.smoothScrollToPosition(messageAdapter.itemCount)
 
-        if (sentBy != MessageState.TYPING && message != welcomeMessage) {
+        if (sentBy != MessageState.TYPING && sentBy != MessageState.SENDING_IMAGE) {
             val dialogEntity = DialogEntityObjectBox()
             dialogEntity.dialogId = getLastIdOfDB()
-            dialogEntity.message = message
-            dialogEntity.messageCount = dialogViewModel.getAllDialog().size
+            dialogEntity.message = messageList
+            dialogEntity.sentBy = sentByList
             dialogViewModel.updateDialogObjectBox(dialogEntity)
         }
     }
 
     private fun addResponse(response: String, isImage: Boolean) = binding.apply {
+        finalList.removeAt(finalList.size - 1)
         messageList.removeAt(messageList.size - 1)
+        sentByList.removeAt(sentByList.size - 1)
         addToChat(response, if (isImage) MessageState.BOT_IMAGE else MessageState.BOT_TEXT)
         tvToolbarState.toGone()
         btnSend.toShow()
@@ -310,10 +323,10 @@ class ChatFragment : Fragment() {
             }
         }
 
-        messageList.add(
-            Message(
+        finalList.add(
+            Pair(
                 if (isImage) "Sending Image... " else "Typing... ",
-                if (isImage) MessageState.SENDING_IMAGE else MessageState.TYPING
+                if (isImage) MessageState.SENDING_IMAGE.name else MessageState.TYPING.name
             )
         )
 

@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:5068861621017274399",
-      "lastPropertyId": "5:7895599077118232634",
+      "lastPropertyId": "7:349963457994227215",
       "name": "DialogEntityObjectBox",
       "properties": [
         {
@@ -15,37 +15,70 @@
           "flags": 1
         },
         {
-          "id": "3:8329479971647448800",
+          "id": "6:2037900002110369870",
+          "name": "dialogId",
+          "indexId": "2:3752093009835164126",
+          "type": 6,
+          "flags": 32808
+        }
+      ],
+      "relations": [
+        {
+          "id": "3:6645943858943753057",
+          "name": "message",
+          "targetId": "2:802077155447602352"
+        }
+      ]
+    },
+    {
+      "id": "2:802077155447602352",
+      "lastPropertyId": "3:1674704931205505573",
+      "name": "Message",
+      "properties": [
+        {
+          "id": "1:3198144579094122248",
+          "name": "id",
+          "type": 6,
+          "flags": 129
+        },
+        {
+          "id": "2:2527853943330981501",
           "name": "message",
           "type": 9
         },
         {
-          "id": "4:4624438066243884172",
+          "id": "3:1674704931205505573",
           "name": "sentBy",
           "type": 9
-        },
-        {
-          "id": "5:7895599077118232634",
-          "name": "messageCount",
-          "type": 5
         }
       ],
       "relations": []
     }
   ],
-  "lastEntityId": "1:5068861621017274399",
-  "lastIndexId": "1:4865735084520471881",
-  "lastRelationId": "0:0",
+  "lastEntityId": "3:7117805896386476751",
+  "lastIndexId": "3:4503778473377718842",
+  "lastRelationId": "3:6645943858943753057",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
   "modelVersionParserMinimum": 5,
-  "retiredEntityUids": [],
+  "retiredEntityUids": [
+    7117805896386476751
+  ],
   "retiredIndexUids": [
-    4865735084520471881
+    4865735084520471881,
+    4503778473377718842
   ],
   "retiredPropertyUids": [
-    3967446958116700366
+    3967446958116700366,
+    7895599077118232634,
+    8329479971647448800,
+    4624438066243884172,
+    6338828741362004567,
+    349963457994227215
   ],
-  "retiredRelationUids": [],
+  "retiredRelationUids": [
+    8948266218876899589,
+    6858384181051504940
+  ],
   "version": 1
 }

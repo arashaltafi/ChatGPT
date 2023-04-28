@@ -19,7 +19,9 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import com.arash.altafi.chatgptsimple.BuildConfig
 import com.arash.altafi.chatgptsimple.R
 import com.arash.altafi.chatgptsimple.domain.provider.local.DialogEntityObjectBox
+import com.arash.altafi.chatgptsimple.ext.runAfter
 import com.arash.altafi.chatgptsimple.ext.toGone
+import com.arash.altafi.chatgptsimple.ext.toHide
 import com.arash.altafi.chatgptsimple.ext.toShow
 import com.arash.altafi.chatgptsimple.ext.toast
 import com.arash.altafi.chatgptsimple.utils.Cache
@@ -125,13 +127,24 @@ class DialogFragment : Fragment() {
         val dialogListEntity = viewModel.getAllDialogObjectBox()
         if (dialogListEntity.isEmpty()) {
             lottieEmpty.toShow()
+            rvDialogs.toHide()
         } else {
+            rvDialogs.toShow()
             lottieEmpty.toGone()
             dialogAdapter = DialogAdapter(ArrayList(dialogListEntity))
             rvDialogs.adapter = dialogAdapter
 
-            val swipeHandler =
-                object : SwipeToDeleteCallbackObjectBox(viewModel, dialogAdapter) {}
+            val swipeHandler = object : SwipeToDeleteCallbackObjectBox(viewModel, dialogAdapter, {
+                if (it.isEmpty()) {
+                    lottieEmpty.toShow()
+                    rvDialogs.toHide()
+                } else {
+                    rvDialogs.toShow()
+                    lottieEmpty.toGone()
+                    dialogAdapter = DialogAdapter(ArrayList(dialogListEntity))
+                    rvDialogs.adapter = dialogAdapter
+                }
+            }) {}
             val itemTouchHelper = ItemTouchHelper(swipeHandler)
             itemTouchHelper.attachToRecyclerView(rvDialogs)
 
@@ -156,8 +169,10 @@ class DialogFragment : Fragment() {
                     getString(R.string.delete)
                 ) {
                     viewModel.deleteDialogObjectBox(dialogModel)
-                    handleList()
-                    toast("SuccessFully Deleted")
+                    runAfter(200, {
+                        handleList()
+                        toast("SuccessFully Deleted")
+                    })
                 }
             ),
             Gravity.BOTTOM.or(Gravity.END),

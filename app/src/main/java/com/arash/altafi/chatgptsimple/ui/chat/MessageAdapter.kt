@@ -8,7 +8,6 @@ import com.arash.altafi.chatgptsimple.R
 import com.arash.altafi.chatgptsimple.databinding.ItemImageRecevieBinding
 import com.arash.altafi.chatgptsimple.databinding.ItemSendBinding
 import com.arash.altafi.chatgptsimple.databinding.ItemTextRecevieBinding
-import com.arash.altafi.chatgptsimple.domain.model.chat.Message
 import com.arash.altafi.chatgptsimple.domain.model.chat.MessageState
 import com.arash.altafi.chatgptsimple.ext.copyTextToClipboard
 import com.arash.altafi.chatgptsimple.ext.shareContent
@@ -16,7 +15,7 @@ import com.arash.altafi.chatgptsimple.ext.toGone
 import com.arash.altafi.chatgptsimple.ext.toShow
 import com.bumptech.glide.Glide
 
-class MessageAdapter(private var messageList: ArrayList<Message>) :
+class MessageAdapter(private var messageList: ArrayList<Pair<String, String>>) :
     RecyclerView.Adapter<ViewHolder>() {
 
     companion object {
@@ -63,27 +62,28 @@ class MessageAdapter(private var messageList: ArrayList<Message>) :
     override fun getItemCount(): Int = messageList.size
 
     override fun getItemViewType(position: Int): Int {
-        return when (messageList[position].sentBy) {
-            MessageState.ME -> VIEW_TYPE_MESSAGE_SENT
-            MessageState.BOT_TEXT -> VIEW_TYPE_MESSAGE_RECEIVED
-            MessageState.BOT_IMAGE -> VIEW_TYPE_IMAGE_RECEIVED
-            MessageState.TYPING -> VIEW_TYPE_MESSAGE_RECEIVED
-            MessageState.SENDING_IMAGE -> VIEW_TYPE_IMAGE_RECEIVED
+        return when (messageList[position].second) {
+            MessageState.ME.name -> VIEW_TYPE_MESSAGE_SENT
+            MessageState.BOT_TEXT.name -> VIEW_TYPE_MESSAGE_RECEIVED
+            MessageState.BOT_IMAGE.name -> VIEW_TYPE_IMAGE_RECEIVED
+            MessageState.TYPING.name -> VIEW_TYPE_MESSAGE_RECEIVED
+            MessageState.SENDING_IMAGE.name -> VIEW_TYPE_IMAGE_RECEIVED
+            else -> -1
         }
     }
 
     inner class MyReceiveTextViewHolder(private val binding: ItemTextRecevieBinding) :
         ViewHolder(binding.root) {
-        fun bind(item: Message) = binding.apply {
-            when (item.sentBy) {
-                MessageState.BOT_TEXT -> {
+        fun bind(item: Pair<String, String>) = binding.apply {
+            when (item.second) {
+                MessageState.BOT_TEXT.name -> {
                     tvCopy.toShow()
                     tvShare.toShow()
                     progressTyping.toGone()
-                    tvLeftChat.text = item.message
+                    tvLeftChat.text = item.first
                 }
 
-                MessageState.TYPING -> {
+                MessageState.TYPING.name -> {
                     tvCopy.toGone()
                     tvShare.toGone()
                     progressTyping.toShow()
@@ -105,17 +105,17 @@ class MessageAdapter(private var messageList: ArrayList<Message>) :
 
     inner class MyReceiveImageViewHolder(private val binding: ItemImageRecevieBinding) :
         ViewHolder(binding.root) {
-        fun bind(item: Message) = binding.apply {
-            when (item.sentBy) {
-                MessageState.BOT_IMAGE -> {
+        fun bind(item: Pair<String, String>) = binding.apply {
+            when (item.second) {
+                MessageState.BOT_IMAGE.name -> {
                     progressSendingImage.toGone()
-                    Glide.with(root.context).load(item.message).into(ivImage)
+                    Glide.with(root.context).load(item.first).into(ivImage)
                     ivImage.setOnClickListener {
-                        onClickImageListener?.invoke(item.message)
+                        onClickImageListener?.invoke(item.first)
                     }
                 }
 
-                MessageState.SENDING_IMAGE -> {
+                MessageState.SENDING_IMAGE.name -> {
                     progressSendingImage.toShow()
                     Glide.with(root.context).load(R.color.transparent).into(ivImage)
                 }
@@ -127,8 +127,8 @@ class MessageAdapter(private var messageList: ArrayList<Message>) :
 
     inner class MySendViewHolder(private val binding: ItemSendBinding) :
         ViewHolder(binding.root) {
-        fun bind(item: Message) = binding.apply {
-            tvRightChat.text = item.message
+        fun bind(item: Pair<String, String>) = binding.apply {
+            tvRightChat.text = item.first
         }
     }
 }

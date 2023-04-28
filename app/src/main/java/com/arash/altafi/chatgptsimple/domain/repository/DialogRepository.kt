@@ -5,7 +5,6 @@ import com.arash.altafi.chatgptsimple.domain.provider.local.DialogEntity
 import com.arash.altafi.chatgptsimple.domain.provider.local.DialogEntityObjectBox
 import com.arash.altafi.chatgptsimple.domain.provider.local.DialogEntityObjectBox_
 import com.arash.altafi.chatgptsimple.domain.provider.local.MessengerDao
-import com.arash.altafi.chatgptsimple.domain.provider.local.ObjectBox
 import com.arash.altafi.chatgptsimple.domain.provider.local.ObjectBox.boxStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -46,19 +45,27 @@ class DialogRepository @Inject constructor(
 
     fun saveDialogObjectBox(dialogEntity: DialogEntityObjectBox) =
         CoroutineScope(coroutineContext).launch(Dispatchers.IO) {
-            boxStore.boxFor(DialogEntityObjectBox::class.java).put(dialogEntity)
+            dialogBox.put(dialogEntity)
         }
 
     fun updateDialogObjectBox(dialogEntity: DialogEntityObjectBox) =
         CoroutineScope(coroutineContext).launch(Dispatchers.IO) {
-            boxStore.boxFor(DialogEntityObjectBox::class.java).put(dialogEntity)
+            dialogBox.put(dialogEntity)
         }
+
+    fun deleteDialogByIdObjectBox(id: Long) {
+        dialogBox.remove(id)
+    }
 
     fun deleteDialogObjectBox(dialogEntity: DialogEntityObjectBox) =
         CoroutineScope(coroutineContext).launch(Dispatchers.IO) {
-            val userBox = boxStore.boxFor(DialogEntityObjectBox::class.java)
-            userBox.remove(dialogEntity)
+            dialogBox.remove(dialogEntity)
         }
+
+    fun getDialogByIdObjectBox(id: Long): DialogEntityObjectBox? = dialogBox.query()
+        .equal(DialogEntityObjectBox_.id, id)
+        .build()
+        .findFirst()
 
     fun getLastDialogIdObjectBox() = dialogBox.query()
         .orderDesc(DialogEntityObjectBox_.dialogId)
@@ -66,7 +73,7 @@ class DialogRepository @Inject constructor(
         .findFirst()?.dialogId ?: 0L
 
     fun getAllDialogObjectBox(): List<DialogEntityObjectBox> {
-        val usersQuery = boxStore.boxFor(DialogEntityObjectBox::class.java).query()
+        val usersQuery = dialogBox.query()
             .orderDesc(DialogEntityObjectBox_.id)
             .build()
         return usersQuery.use { it.find() }
