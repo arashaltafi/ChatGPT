@@ -7,6 +7,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import io.sentry.android.okhttp.SentryOkHttpInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -70,6 +71,7 @@ object NetworkModule {
         .connectTimeout(10, TimeUnit.SECONDS)
         .readTimeout(10, TimeUnit.SECONDS)
         .retryOnConnectionFailure(true)
+        .addInterceptor(SentryOkHttpInterceptor())
         .addInterceptor { chain ->
             val original = chain.request()
             val request = original.newBuilder().run {
@@ -91,6 +93,7 @@ object NetworkModule {
         .connectTimeout(10, TimeUnit.SECONDS)
         .readTimeout(10, TimeUnit.SECONDS)
         .retryOnConnectionFailure(true)
+        .addInterceptor(SentryOkHttpInterceptor())
         .addInterceptor { chain ->
             val original = chain.request()
             val request = original.newBuilder().run {

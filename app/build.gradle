@@ -6,6 +6,7 @@ plugins {
     id 'dagger.hilt.android.plugin'
     id 'androidx.navigation.safeargs.kotlin'
     id "io.objectbox"
+    id "io.sentry.android.gradle" version "3.5.0"
 }
 
 android {
@@ -169,4 +170,7 @@ dependencies {
 
     //Reactor
     implementation "com.github.aaaamirabbas:reactor:1.5.6"
+
+    //Sentry
+    implementation 'io.sentry:sentry-android:6.11.0'
 }
