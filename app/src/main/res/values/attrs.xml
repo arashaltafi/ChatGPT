@@ -4,5 +4,8 @@
     <attr name="colorBackGround_Second" format="color" />
     <attr name="background_icon" format="color" />
     <attr name="colorDivider" format="color" />
-
+    <attr name="chatIncoming" format="color" />
+    <attr name="chatOnIncoming" format="color" />
+    <attr name="chatOutcome" format="color" />
+    <attr name="chatOnOutcome" format="color" />
 </resources>

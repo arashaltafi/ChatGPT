@@ -39,6 +39,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import saman.zamani.persiandate.PersianDate
 
 @AndroidEntryPoint
 class ChatFragment : Fragment() {
@@ -53,12 +54,12 @@ class ChatFragment : Fragment() {
     private val chatViewModel: ChatViewModel by viewModels()
     private val imageViewModel: ImageViewModel by viewModels()
 
-    private var finalList: ArrayList<Pair<String, String>> = arrayListOf()
+    private var finalList: ArrayList<Triple<String, String, String>> = arrayListOf()
     private var messageList: ArrayList<String> = arrayListOf()
     private var sentByList: ArrayList<String> = arrayListOf()
+    private var timeList: ArrayList<String> = arrayListOf()
     private lateinit var messageAdapter: MessageAdapter
 
-    private val welcomeMessage = "Hi, How may I assist you today?"
     private var networkConnection: ((connected: Boolean) -> Unit)? = null
 
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
@@ -102,19 +103,32 @@ class ChatFragment : Fragment() {
             dialogViewModel.getDialogByIdObjectBox(args.dialogId)?.sentBy?.forEach { sentBy ->
                 sentByList.add(sentBy)
             }
+            dialogViewModel.getDialogByIdObjectBox(args.dialogId)?.time?.forEach { time ->
+                timeList.add(time)
+            }
 
-            messageList.zip(sentByList).toCollection(finalList)
+            messageList.zip(sentByList).zip(timeList).map {
+                Triple(it.first.first, it.first.second, it.second)
+            }.toCollection(finalList)
 
             dialogViewModel.getDialogByIdObjectBox(args.dialogId)
         } else {
-            finalList.add(Pair(welcomeMessage, MessageState.BOT_TEXT.name))
-            messageList.add(welcomeMessage)
+            finalList.add(
+                Triple(
+                    getString(R.string.welcomeMessage),
+                    MessageState.BOT_TEXT.name,
+                    PersianDate().getClockString()
+                )
+            )
+            messageList.add(getString(R.string.welcomeMessage))
             sentByList.add(MessageState.BOT_TEXT.name)
+            timeList.add(PersianDate().getClockString())
 
             val dialogEntity = DialogEntityObjectBox()
             dialogEntity.dialogId = getLastIdOfDB() + 1
             dialogEntity.message = messageList
             dialogEntity.sentBy = sentByList
+            dialogEntity.time = timeList
 
             dialogViewModel.saveDialogObjectBox(dialogEntity)
         }
@@ -153,15 +167,15 @@ class ChatFragment : Fragment() {
                 val question = edtMessage.text.toString().trim()
                 edtMessage.setText("")
                 if (question.isEmpty() || question.substringAfter(IMAGE).trim().isEmpty()) {
-                    toast("Please Write Your Question")
-                    edtMessage.error = "Please Write Your Question"
+                    toast(getString(R.string.please_fill_type))
+                    edtMessage.error = getString(R.string.please_fill_type)
                 } else {
                     it.hideKeyboard()
                     addToChat(question, MessageState.ME)
                     callAPI(question, question.startsWith(IMAGE))
                 }
             } else {
-                toast("Please Turn On Your Internet!!!")
+                toast(getString(R.string.network_down))
             }
         }
 
@@ -286,9 +300,10 @@ class ChatFragment : Fragment() {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun addToChat(message: String, sentBy: MessageState) {
-        finalList.add(Pair(message, sentBy.name))
+        finalList.add(Triple(message, sentBy.name, PersianDate().getClockString()))
         sentByList.add(sentBy.name)
         messageList.add(message)
+        timeList.add(PersianDate().getClockString())
 
         messageAdapter.notifyDataSetChanged()
         binding.rvChat.smoothScrollToPosition(messageAdapter.itemCount)
@@ -298,14 +313,17 @@ class ChatFragment : Fragment() {
             dialogEntity.dialogId = getLastIdOfDB()
             dialogEntity.message = messageList
             dialogEntity.sentBy = sentByList
+            dialogEntity.time = timeList
+            dialogEntity.lastTime = System.currentTimeMillis()
             dialogViewModel.updateDialogObjectBox(dialogEntity)
         }
     }
 
     private fun addResponse(response: String, isImage: Boolean) = binding.apply {
         finalList.removeAt(finalList.size - 1)
-        messageList.removeAt(messageList.size - 1)
-        sentByList.removeAt(sentByList.size - 1)
+//        messageList.removeAt(messageList.size - 1)
+//        sentByList.removeAt(sentByList.size - 1)
+//        timeList.removeAt(timeList.size - 1)
         addToChat(response, if (isImage) MessageState.BOT_IMAGE else MessageState.BOT_TEXT)
         tvToolbarState.toGone()
         btnSend.toShow()
@@ -318,15 +336,16 @@ class ChatFragment : Fragment() {
             progressBar.toShow()
 
             tvToolbarState.apply {
-                text = if (isImage) "Sending Image... " else "Typing... "
+                text = if (isImage) getString(R.string.sending_image) else getString(R.string.typing)
                 toShow()
             }
         }
 
         finalList.add(
-            Pair(
-                if (isImage) "Sending Image... " else "Typing... ",
-                if (isImage) MessageState.SENDING_IMAGE.name else MessageState.TYPING.name
+            Triple(
+                if (isImage) getString(R.string.sending_image) else getString(R.string.typing),
+                if (isImage) MessageState.SENDING_IMAGE.name else MessageState.TYPING.name,
+                PersianDate().getClockString()
             )
         )
 
@@ -349,7 +368,7 @@ class ChatFragment : Fragment() {
         }
 
         chatViewModel.liveError.observe(viewLifecycleOwner) {
-            addResponse("There is Was Error Please Send Again Later ...", false)
+            addResponse(getString(R.string.error_server), false)
         }
 
         imageViewModel.liveDataImage.observe(viewLifecycleOwner) { response ->

@@ -35,5 +35,20 @@
         app:layout_constraintTop_toTopOf="@id/ivImage"
         tools:visibility="visible" />
 
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tvTime"
+        style="@style/txt.h00"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lines="1"
+        android:maxLines="1"
+        android:padding="8dp"
+        android:singleLine="true"
+        android:textColor="?android:attr/textColorHint"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivImage"
+        tools:layout_editor_absoluteY="8dp"
+        tools:text="07:43 صبح" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,6 +8,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.sentry.android.okhttp.SentryOkHttpInterceptor
+import okhttp3.ConnectionSpec
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -72,6 +73,11 @@ object NetworkModule {
         .readTimeout(10, TimeUnit.SECONDS)
         .retryOnConnectionFailure(true)
         .addInterceptor(SentryOkHttpInterceptor())
+        .connectionSpecs(listOf(ConnectionSpec.COMPATIBLE_TLS))
+        .addInterceptor(
+            HttpLoggingInterceptor()
+                .setLevel(HttpLoggingInterceptor.Level.BODY)
+        )
         .addInterceptor { chain ->
             val original = chain.request()
             val request = original.newBuilder().run {
@@ -94,6 +100,11 @@ object NetworkModule {
         .readTimeout(10, TimeUnit.SECONDS)
         .retryOnConnectionFailure(true)
         .addInterceptor(SentryOkHttpInterceptor())
+        .connectionSpecs(listOf(ConnectionSpec.COMPATIBLE_TLS))
+        .addInterceptor(
+            HttpLoggingInterceptor()
+                .setLevel(HttpLoggingInterceptor.Level.BODY)
+        )
         .addInterceptor { chain ->
             val original = chain.request()
             val request = original.newBuilder().run {

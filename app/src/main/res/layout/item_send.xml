@@ -1,27 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layoutDirection="ltr"
     android:padding="8dp">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/llRightChatView"
+        style="@style/card.messenger.outcome.message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="80dp"
-        android:background="@drawable/background_right"
-        android:backgroundTint="@color/red"
         android:padding="8dp">
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvRightChat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textSize="18sp" />
+            android:textColor="?attr/chatOnOutcome"
+            android:textSize="18sp"
+            tools:text="Arash Altafi" />
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tvTime"
+        style="@style/txt.h00"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/llRightChatView"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:lines="1"
+        android:maxLines="1"
+        android:padding="4dp"
+        android:singleLine="true"
+        android:textColor="?android:attr/textColorHint"
+        tools:text="07:43 صبح" />
 
 </RelativeLayout>

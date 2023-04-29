@@ -23,6 +23,7 @@ import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
@@ -190,4 +191,8 @@ fun <F> runAfter(
         .observeOn(AndroidSchedulers.mainThread())
         .doOnComplete { fx() }
         .subscribe()
+}
+
+fun String.applyValue(vararg args: Any?): String {
+    return String.format(Locale.US, this, *args)
 }

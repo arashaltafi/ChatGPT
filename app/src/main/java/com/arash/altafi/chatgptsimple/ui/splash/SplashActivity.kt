@@ -2,6 +2,7 @@ package com.arash.altafi.chatgptsimple.ui.splash
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.arash.altafi.chatgptsimple.BuildConfig
@@ -20,6 +21,8 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        window.statusBarColor = Color.TRANSPARENT
 
         init()
     }

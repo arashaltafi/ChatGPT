@@ -16,4 +16,6 @@ class DialogEntityObjectBox {
     var dialogId: Long? = null
     var message: List<String>? = null
     var sentBy: List<String>? = null
+    var time: List<String>? = null
+    var lastTime: Long? = null
 }

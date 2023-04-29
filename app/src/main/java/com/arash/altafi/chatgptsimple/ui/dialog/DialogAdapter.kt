@@ -4,9 +4,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.arash.altafi.chatgptsimple.R
 import com.arash.altafi.chatgptsimple.databinding.DialogItemBinding
 import com.arash.altafi.chatgptsimple.domain.model.chat.MessageState
 import com.arash.altafi.chatgptsimple.domain.provider.local.DialogEntityObjectBox
+import com.arash.altafi.chatgptsimple.ext.getDateClassifiedByDayMothYear
+import saman.zamani.persiandate.PersianDate
 
 class DialogAdapter(private var dialogList: ArrayList<DialogEntityObjectBox>) :
     RecyclerView.Adapter<DialogAdapter.ViewHolder>() {
@@ -25,8 +28,6 @@ class DialogAdapter(private var dialogList: ArrayList<DialogEntityObjectBox>) :
 
     override fun getItemCount(): Int = dialogList.size
 
-    fun getDialogEntity(position: Int): DialogEntityObjectBox = dialogList[position]
-
     inner class ViewHolder(private val binding: DialogItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
@@ -41,10 +42,14 @@ class DialogAdapter(private var dialogList: ArrayList<DialogEntityObjectBox>) :
             }
 
             tvTitle.text = if (dialogModel.sentBy?.lastOrNull() == MessageState.BOT_IMAGE.name)
-                "image"
+                root.context.getString(R.string.image)
             else
                 dialogModel.message?.lastOrNull().toString()
             tvBadge.text = (dialogModel.message?.count() ?: 0).toString()
+
+            val time = dialogModel.lastTime ?: System.currentTimeMillis()
+            tvTime.text = PersianDate(time).getDateClassifiedByDayMothYear()
+
         }
     }
 

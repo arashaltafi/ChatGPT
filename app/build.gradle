@@ -173,4 +173,8 @@ dependencies {
 
     //Sentry
     implementation 'io.sentry:sentry-android:6.11.0'
+
+    //Persian date
+    implementation "com.github.samanzamani:PersianDate:1.1"
+    implementation "com.xdev.arch.persiancalendar.datepicker:datepicker:2.0.1"
 }

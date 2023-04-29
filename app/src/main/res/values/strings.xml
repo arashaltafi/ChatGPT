@@ -1,7 +1,17 @@
 <resources>
-    <string name="app_name">ChatGPT Simple</string>
-    <string name="connecting">Connecting …</string>
-    <string name="gpt_image">GPT Image</string>
-    <string name="delete">Delete Dialog</string>
-    <string name="back">Back</string>
+    <string name="app_name">هوش مصنوعی نهاد</string>
+    <string name="image">تصویر</string>
+    <string name="connecting">در حال اتصال …</string>
+    <string name="gpt_image">تولید کننده تصویر</string>
+    <string name="delete">حذف گفتگو</string>
+    <string name="back">برگشت</string>
+    <string name="typing">در حال تایپ …</string>
+    <string name="sending_image">در حال ارسال تصویر …</string>
+    <string name="edt_hint">بنویسید …</string>
+    <string name="welcomeMessage">سلام، امروز چگونه می توانم به شما کمک کنم؟</string>
+    <string name="generate_image">تولید کن</string>
+    <string name="please_fill_type">لطفا چیزی بنویسید.</string>
+    <string name="network_down">لطفا از اتصال اینترنت خود اطمینان حاصل کنید.</string>
+    <string name="successFully_deleted">با موفقیت حذف شد.</string>
+    <string name="error_server">خطایی رخ داده است. لطفا مجددا ارسال کنید …</string>
 </resources>

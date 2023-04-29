@@ -92,14 +92,14 @@ class ImageSearchFragment : Fragment() {
                 val question = edtImage.text.toString().trim()
                 edtImage.setText("")
                 if (question.isEmpty()) {
-                    toast("Please type something")
-                    edtImage.error = "Please type something"
+                    toast(getString(R.string.please_fill_type))
+                    edtImage.error = getString(R.string.please_fill_type)
                 } else {
                     it.hideKeyboard()
                     callAPI(question)
                 }
             } else {
-                toast("Please Turn On Your Internet!!!")
+                toast(getString(R.string.network_down))
             }
         }
 

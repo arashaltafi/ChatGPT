@@ -53,7 +53,10 @@ open class BaseViewModel : ViewModel() {
         val dispatchRetry: (() -> Unit)?
         dispatchRetry = {
             viewModelScope.launch {
-                networkCall.collect { response ->
+                networkCall.catch {
+                    it.printStackTrace()
+                    onFailureListener?.invoke(true)
+                }.collect { response ->
                     if (response.isSuccessful) {
                         response.body()?.let {
                             liveResult?.value = it

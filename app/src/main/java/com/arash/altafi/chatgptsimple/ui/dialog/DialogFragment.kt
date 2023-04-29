@@ -15,7 +15,6 @@ import com.arash.altafi.chatgptsimple.databinding.FragmentDialogBinding
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.ItemTouchHelper
 import com.arash.altafi.chatgptsimple.BuildConfig
 import com.arash.altafi.chatgptsimple.R
 import com.arash.altafi.chatgptsimple.domain.provider.local.DialogEntityObjectBox
@@ -134,20 +133,6 @@ class DialogFragment : Fragment() {
             dialogAdapter = DialogAdapter(ArrayList(dialogListEntity))
             rvDialogs.adapter = dialogAdapter
 
-            val swipeHandler = object : SwipeToDeleteCallbackObjectBox(viewModel, dialogAdapter, {
-                if (it.isEmpty()) {
-                    lottieEmpty.toShow()
-                    rvDialogs.toHide()
-                } else {
-                    rvDialogs.toShow()
-                    lottieEmpty.toGone()
-                    dialogAdapter = DialogAdapter(ArrayList(dialogListEntity))
-                    rvDialogs.adapter = dialogAdapter
-                }
-            }) {}
-            val itemTouchHelper = ItemTouchHelper(swipeHandler)
-            itemTouchHelper.attachToRecyclerView(rvDialogs)
-
             dialogAdapter.onClickListener = {
                 findNavController().navigate(
                     DialogFragmentDirections.actionDialogFragmentToChatFragment(it.id!!)
@@ -171,7 +156,7 @@ class DialogFragment : Fragment() {
                     viewModel.deleteDialogObjectBox(dialogModel)
                     runAfter(200, {
                         handleList()
-                        toast("SuccessFully Deleted")
+                        toast(getString(R.string.successFully_deleted))
                     })
                 }
             ),

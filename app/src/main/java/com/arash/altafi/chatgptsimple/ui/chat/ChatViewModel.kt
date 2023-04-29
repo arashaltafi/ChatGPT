@@ -29,15 +29,15 @@ class ChatViewModel @Inject constructor(
                 ChatPostBody(
                     // Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far,
                     // decreasing the model's likelihood to repeat the same line verbatim.
-                    frequencyPenalty = 1.0,
+                    frequencyPenalty = 0.0,
                     // The maximum number of tokens allowed for the generated answer.
                     // By default, the number of tokens the model can return will be (4096 - prompt tokens).
-                    maxTokens = 400,
+                    maxTokens = 4000,
                     messages = chatMessageList,
                     model = "gpt-3.5-turbo",
                     // Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far,
                     // increasing the model's likelihood to talk about new topics.
-                    presencePenalty = 0.6,
+                    presencePenalty = 0.0,
                     // Controls randomness: Lowering results in less random completions.
                     // As the temperature approaches zero, the model will become deterministic and repetitive
                     temperature = 0.9,
