@@ -22,7 +22,7 @@ import com.arash.altafi.chatgptsimple.ext.runAfter
 import com.arash.altafi.chatgptsimple.ext.toGone
 import com.arash.altafi.chatgptsimple.ext.toHide
 import com.arash.altafi.chatgptsimple.ext.toShow
-import com.arash.altafi.chatgptsimple.ext.toast
+import com.arash.altafi.chatgptsimple.ext.toastCustom
 import com.arash.altafi.chatgptsimple.utils.Cache
 import com.arash.altafi.chatgptsimple.utils.NetworkUtils
 import com.arash.altafi.chatgptsimple.utils.PopupUtil
@@ -156,7 +156,7 @@ class DialogFragment : Fragment() {
                     viewModel.deleteDialogObjectBox(dialogModel)
                     runAfter(200, {
                         handleList()
-                        toast(getString(R.string.successFully_deleted))
+                        toastCustom(getString(R.string.successFully_deleted))
                     })
                 }
             ),

@@ -8,4 +8,5 @@
     <attr name="chatOnIncoming" format="color" />
     <attr name="chatOutcome" format="color" />
     <attr name="chatOnOutcome" format="color" />
+    <attr name="colorControlHighlight" format="color" />
 </resources>

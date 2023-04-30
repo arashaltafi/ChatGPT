@@ -16,6 +16,8 @@
         <item name="colorBackGround_Second">@color/grey_900</item>
         <item name="background_icon">@color/white</item>
         <item name="colorDivider">#4B4949</item>
+        <item name="colorControlHighlight">#101010</item>
+        <item name="colorControlNormal">#e0e0e0</item>
 
         <item name="chatIncoming">#404c53</item>
         <item name="chatOnIncoming">#e9edf0</item>
@@ -234,6 +236,12 @@
         <item name="cornerSizeTopLeft">5dp</item>
         <item name="cornerSizeBottomRight">0dp</item>
         <item name="cornerSizeBottomLeft">5dp</item>
+    </style>
+
+    <style name="card.outline.round" parent="Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">12dp</item>
+        <item name="cardElevation">0dp</item>
+        <item name="strokeWidth">0dp</item>
     </style>
 
 </resources>

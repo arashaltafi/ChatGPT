@@ -10,6 +10,8 @@ import android.content.res.Resources
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.TypedValue
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -17,8 +19,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
+import androidx.annotation.DrawableRes
 import androidx.fragment.app.Fragment
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
+import com.arash.altafi.chatgptsimple.databinding.LayoutToastBinding
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -57,8 +61,35 @@ fun Context.toast(msg: String) {
 }
 
 fun Fragment.toast(msg: String) {
-    Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+    requireContext().toast(msg)
 }
+
+fun Context.toastCustom(text: String, @DrawableRes icon: Int? = null, theView: View? = null) {
+    val viewBinding = LayoutToastBinding.inflate(LayoutInflater.from(this)).apply {
+        tv.text = text
+        icon?.let {
+            tv.setDrawable(icon, 0, 0, 0)
+        }
+    }
+
+    Toast(this).apply {
+
+        theView?.let {
+            val absoluteLocation = IntArray(2)
+            theView.getLocationInWindow(absoluteLocation)
+            setGravity(Gravity.BOTTOM or Gravity.FILL_HORIZONTAL, 0, 200)
+        } ?: run {
+            setGravity(Gravity.BOTTOM or Gravity.FILL_HORIZONTAL, 0, 200)
+        }
+
+        view = viewBinding.root
+        duration = Toast.LENGTH_SHORT
+        show()
+    }
+}
+
+fun Fragment.toastCustom(text: String, @DrawableRes icon: Int? = null, view: View? = null) =
+    requireContext().toastCustom(text, icon, view)
 
 fun Int.toPx(): Int {
     val displayMetrics = Resources.getSystem().displayMetrics
