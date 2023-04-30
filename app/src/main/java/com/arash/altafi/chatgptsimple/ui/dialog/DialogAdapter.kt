@@ -41,11 +41,12 @@ class DialogAdapter(private var dialogList: ArrayList<DialogEntityObjectBox>) :
                 onClickListener?.invoke(dialogModel)
             }
 
-            tvTitle.text = if (dialogModel.sentBy?.lastOrNull() == MessageState.BOT_IMAGE.name)
-                root.context.getString(R.string.image)
-            else
-                dialogModel.message?.lastOrNull().toString()
-            tvBadge.text = (dialogModel.message?.count() ?: 0).toString()
+            tvTitle.text =
+                if (dialogModel.messages.lastOrNull()?.sentBy == MessageState.BOT_IMAGE.name)
+                    root.context.getString(R.string.image)
+                else
+                    dialogModel.messages.lastOrNull()?.message.toString()
+            tvBadge.text = dialogModel.messages.count().toString()
 
             val time = dialogModel.lastTime ?: System.currentTimeMillis()
             tvTime.text = PersianDate(time).getDateClassifiedByDayMothYear()

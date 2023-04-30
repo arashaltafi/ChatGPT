@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:5068861621017274399",
-      "lastPropertyId": "9:5935176410552062536",
+      "lastPropertyId": "11:6131080558014565656",
       "name": "DialogEntityObjectBox",
       "properties": [
         {
@@ -30,6 +30,16 @@
           "id": "9:5935176410552062536",
           "name": "sentBy",
           "type": 30
+        },
+        {
+          "id": "10:3807587455961768830",
+          "name": "time",
+          "type": 30
+        },
+        {
+          "id": "11:6131080558014565656",
+          "name": "lastTime",
+          "type": 6
         }
       ],
       "relations": []

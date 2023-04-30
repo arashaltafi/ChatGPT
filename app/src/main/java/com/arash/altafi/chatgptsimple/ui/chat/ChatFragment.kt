@@ -29,6 +29,7 @@ import com.arash.altafi.chatgptsimple.domain.model.chat.ChatPostBody
 import com.arash.altafi.chatgptsimple.domain.model.chat.ChatRole
 import com.arash.altafi.chatgptsimple.domain.model.chat.MessageState
 import com.arash.altafi.chatgptsimple.domain.provider.local.DialogEntityObjectBox
+import com.arash.altafi.chatgptsimple.domain.provider.local.MessageEntityObjectBox
 import com.arash.altafi.chatgptsimple.ext.*
 import com.arash.altafi.chatgptsimple.ui.dialog.DialogViewModel
 import com.arash.altafi.chatgptsimple.ui.image.ImageViewModel
@@ -54,10 +55,10 @@ class ChatFragment : Fragment() {
     private val chatViewModel: ChatViewModel by viewModels()
     private val imageViewModel: ImageViewModel by viewModels()
 
-    private var finalList: ArrayList<Triple<String, String, String>> = arrayListOf()
-    private var messageList: ArrayList<String> = arrayListOf()
-    private var sentByList: ArrayList<String> = arrayListOf()
-    private var timeList: ArrayList<String> = arrayListOf()
+    private var isRestoredFromBackStack = false
+
+    private var finalList: ArrayList<MessageEntityObjectBox> = arrayListOf()
+
     private lateinit var messageAdapter: MessageAdapter
 
     private var networkConnection: ((connected: Boolean) -> Unit)? = null
@@ -77,7 +78,13 @@ class ChatFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initObserve()
-        init()
+        if (!isRestoredFromBackStack)
+            init()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        isRestoredFromBackStack = false
     }
 
     override fun onCreateView(
@@ -97,39 +104,26 @@ class ChatFragment : Fragment() {
 
     private fun init() = binding.apply {
         if (args.dialogId != -1L) {
-            dialogViewModel.getDialogByIdObjectBox(args.dialogId)?.message?.forEach { message ->
-                messageList.add(message)
+            val dialogEntity = dialogViewModel.getDialogByIdObjectBox(args.dialogId)
+            dialogEntity!!.messages.forEach {
+                finalList.add(it)
             }
-            dialogViewModel.getDialogByIdObjectBox(args.dialogId)?.sentBy?.forEach { sentBy ->
-                sentByList.add(sentBy)
-            }
-            dialogViewModel.getDialogByIdObjectBox(args.dialogId)?.time?.forEach { time ->
-                timeList.add(time)
-            }
-
-            messageList.zip(sentByList).zip(timeList).map {
-                Triple(it.first.first, it.first.second, it.second)
-            }.toCollection(finalList)
-
-            dialogViewModel.getDialogByIdObjectBox(args.dialogId)
         } else {
-            finalList.add(
-                Triple(
-                    getString(R.string.welcomeMessage),
-                    MessageState.BOT_TEXT.name,
-                    PersianDate().getClockString()
-                )
-            )
-            messageList.add(getString(R.string.welcomeMessage))
-            sentByList.add(MessageState.BOT_TEXT.name)
-            timeList.add(PersianDate().getClockString())
+            val messageEntityObjectBox = MessageEntityObjectBox()
+            messageEntityObjectBox.message = getString(R.string.welcomeMessage)
+            messageEntityObjectBox.sentBy = MessageState.BOT_TEXT.name
+            messageEntityObjectBox.time = PersianDate().getClockString()
+            finalList.add(messageEntityObjectBox)
 
             val dialogEntity = DialogEntityObjectBox()
             dialogEntity.dialogId = getLastIdOfDB() + 1
-            dialogEntity.message = messageList
-            dialogEntity.sentBy = sentByList
-            dialogEntity.time = timeList
+            dialogEntity.lastTime = System.currentTimeMillis()
 
+            finalList.forEach {
+                it.dialog.targetId = dialogViewModel.getDialogId(dialogEntity)
+            }
+
+            dialogEntity.messages.addAll(finalList)
             dialogViewModel.saveDialogObjectBox(dialogEntity)
         }
 
@@ -300,10 +294,11 @@ class ChatFragment : Fragment() {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun addToChat(message: String, sentBy: MessageState) {
-        finalList.add(Triple(message, sentBy.name, PersianDate().getClockString()))
-        sentByList.add(sentBy.name)
-        messageList.add(message)
-        timeList.add(PersianDate().getClockString())
+        val messageEntityObjectBox = MessageEntityObjectBox()
+        messageEntityObjectBox.message = message
+        messageEntityObjectBox.sentBy = sentBy.name
+        messageEntityObjectBox.time = PersianDate().getClockString()
+        finalList.add(messageEntityObjectBox)
 
         messageAdapter.notifyDataSetChanged()
         binding.rvChat.smoothScrollToPosition(messageAdapter.itemCount)
@@ -311,9 +306,7 @@ class ChatFragment : Fragment() {
         if (sentBy != MessageState.TYPING && sentBy != MessageState.SENDING_IMAGE) {
             val dialogEntity = DialogEntityObjectBox()
             dialogEntity.dialogId = getLastIdOfDB()
-            dialogEntity.message = messageList
-            dialogEntity.sentBy = sentByList
-            dialogEntity.time = timeList
+            dialogEntity.messages.addAll(finalList)
             dialogEntity.lastTime = System.currentTimeMillis()
             dialogViewModel.updateDialogObjectBox(dialogEntity)
         }
@@ -321,9 +314,6 @@ class ChatFragment : Fragment() {
 
     private fun addResponse(response: String, isImage: Boolean) = binding.apply {
         finalList.removeAt(finalList.size - 1)
-//        messageList.removeAt(messageList.size - 1)
-//        sentByList.removeAt(sentByList.size - 1)
-//        timeList.removeAt(timeList.size - 1)
         addToChat(response, if (isImage) MessageState.BOT_IMAGE else MessageState.BOT_TEXT)
         tvToolbarState.toGone()
         btnSend.toShow()
@@ -336,18 +326,19 @@ class ChatFragment : Fragment() {
             progressBar.toShow()
 
             tvToolbarState.apply {
-                text = if (isImage) getString(R.string.sending_image) else getString(R.string.typing)
+                text =
+                    if (isImage) getString(R.string.sending_image) else getString(R.string.typing)
                 toShow()
             }
         }
 
-        finalList.add(
-            Triple(
-                if (isImage) getString(R.string.sending_image) else getString(R.string.typing),
-                if (isImage) MessageState.SENDING_IMAGE.name else MessageState.TYPING.name,
-                PersianDate().getClockString()
-            )
-        )
+        val messageEntityObjectBox = MessageEntityObjectBox()
+        messageEntityObjectBox.message =
+            if (isImage) getString(R.string.sending_image) else getString(R.string.typing)
+        messageEntityObjectBox.sentBy =
+            if (isImage) MessageState.SENDING_IMAGE.name else MessageState.TYPING.name
+        messageEntityObjectBox.time = PersianDate().getClockString()
+        finalList.add(messageEntityObjectBox)
 
         if (isImage) {
             imageViewModel.generateImage(question.substringAfter(IMAGE).trim())
@@ -400,6 +391,11 @@ class ChatFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         unregisterNetworkConnectivity(requireContext())
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        isRestoredFromBackStack = true
     }
 
     private companion object {

@@ -23,11 +23,11 @@
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tvLeftChat"
+                style="@style/txt.h2.medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="?attr/chatOnIncoming"
                 android:textIsSelectable="true"
-                android:textSize="18sp"
                 tools:text="Arash Altafi" />
 
             <com.wang.avi.AVLoadingIndicatorView

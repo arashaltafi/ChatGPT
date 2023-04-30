@@ -17,10 +17,10 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvRightChat"
+            style="@style/txt.h2.medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="?attr/chatOnOutcome"
-            android:textSize="18sp"
             tools:text="Arash Altafi" />
 
     </com.google.android.material.card.MaterialCardView>

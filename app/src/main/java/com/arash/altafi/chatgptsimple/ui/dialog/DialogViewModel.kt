@@ -60,4 +60,6 @@ class DialogViewModel @Inject constructor(
     fun getAllDialogObjectBox(): List<DialogEntityObjectBox> =
         dialogRepository.getAllDialogObjectBox()
 
+    fun getDialogId(dialogEntity: DialogEntityObjectBox): Long =
+        dialogRepository.getDialogId(dialogEntity)
 }

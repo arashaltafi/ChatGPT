@@ -5,6 +5,7 @@ import com.arash.altafi.chatgptsimple.domain.provider.local.DialogEntity
 import com.arash.altafi.chatgptsimple.domain.provider.local.DialogEntityObjectBox
 import com.arash.altafi.chatgptsimple.domain.provider.local.DialogEntityObjectBox_
 import com.arash.altafi.chatgptsimple.domain.provider.local.MessengerDao
+import com.arash.altafi.chatgptsimple.domain.provider.local.ObjectBox
 import com.arash.altafi.chatgptsimple.domain.provider.local.ObjectBox.boxStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -78,4 +79,6 @@ class DialogRepository @Inject constructor(
             .build()
         return usersQuery.use { it.find() }
     }
+
+    fun getDialogId(dialogEntity: DialogEntityObjectBox) = dialogBox.put(dialogEntity)
 }

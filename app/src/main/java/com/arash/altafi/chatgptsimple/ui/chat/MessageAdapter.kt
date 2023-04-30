@@ -9,11 +9,12 @@ import com.arash.altafi.chatgptsimple.databinding.ItemImageRecevieBinding
 import com.arash.altafi.chatgptsimple.databinding.ItemSendBinding
 import com.arash.altafi.chatgptsimple.databinding.ItemTextRecevieBinding
 import com.arash.altafi.chatgptsimple.domain.model.chat.MessageState
+import com.arash.altafi.chatgptsimple.domain.provider.local.MessageEntityObjectBox
 import com.arash.altafi.chatgptsimple.ext.toGone
 import com.arash.altafi.chatgptsimple.ext.toShow
 import com.bumptech.glide.Glide
 
-class MessageAdapter(private var messageList: ArrayList<Triple<String, String, String>>) :
+class MessageAdapter(private var messageList: ArrayList<MessageEntityObjectBox>) :
     RecyclerView.Adapter<ViewHolder>() {
 
     companion object {
@@ -60,7 +61,7 @@ class MessageAdapter(private var messageList: ArrayList<Triple<String, String, S
     override fun getItemCount(): Int = messageList.size
 
     override fun getItemViewType(position: Int): Int {
-        return when (messageList[position].second) {
+        return when (messageList[position].sentBy) {
             MessageState.ME.name -> VIEW_TYPE_MESSAGE_SENT
             MessageState.BOT_TEXT.name -> VIEW_TYPE_MESSAGE_RECEIVED
             MessageState.BOT_IMAGE.name -> VIEW_TYPE_IMAGE_RECEIVED
@@ -72,14 +73,14 @@ class MessageAdapter(private var messageList: ArrayList<Triple<String, String, S
 
     inner class MyReceiveTextViewHolder(private val binding: ItemTextRecevieBinding) :
         ViewHolder(binding.root) {
-        fun bind(item: Triple<String, String, String>) = binding.apply {
-            when (item.second) {
+        fun bind(item: MessageEntityObjectBox) = binding.apply {
+            when (item.sentBy) {
                 MessageState.BOT_TEXT.name -> {
                     tvTime.toShow()
 //                    tvCopy.toShow()
 //                    tvShare.toShow()
                     progressTyping.toGone()
-                    tvLeftChat.text = item.first
+                    tvLeftChat.text = item.message
                 }
 
                 MessageState.TYPING.name -> {
@@ -93,7 +94,7 @@ class MessageAdapter(private var messageList: ArrayList<Triple<String, String, S
                 else -> {}
             }
 
-            tvTime.text = item.third
+            tvTime.text = item.time
 
             /*tvCopy.setOnClickListener {
                 it.context.copyTextToClipboard(tvLeftChat.text.toString())
@@ -107,14 +108,14 @@ class MessageAdapter(private var messageList: ArrayList<Triple<String, String, S
 
     inner class MyReceiveImageViewHolder(private val binding: ItemImageRecevieBinding) :
         ViewHolder(binding.root) {
-        fun bind(item: Triple<String, String, String>) = binding.apply {
-            when (item.second) {
+        fun bind(item: MessageEntityObjectBox) = binding.apply {
+            when (item.sentBy) {
                 MessageState.BOT_IMAGE.name -> {
                     tvTime.toShow()
                     progressSendingImage.toGone()
-                    Glide.with(root.context).load(item.first).into(ivImage)
+                    Glide.with(root.context).load(item.message).into(ivImage)
                     ivImage.setOnClickListener {
-                        onClickImageListener?.invoke(item.first)
+                        onClickImageListener?.invoke(item.message.toString())
                     }
                 }
 
@@ -127,15 +128,15 @@ class MessageAdapter(private var messageList: ArrayList<Triple<String, String, S
                 else -> {}
             }
 
-            tvTime.text = item.third
+            tvTime.text = item.time
         }
     }
 
     inner class MySendViewHolder(private val binding: ItemSendBinding) :
         ViewHolder(binding.root) {
-        fun bind(item: Triple<String, String, String>) = binding.apply {
-            tvRightChat.text = item.first
-            tvTime.text = item.third
+        fun bind(item: MessageEntityObjectBox) = binding.apply {
+            tvRightChat.text = item.message
+            tvTime.text = item.time
         }
     }
 }
