@@ -7,6 +7,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Build
+import android.os.StrictMode
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.TypedValue
@@ -20,13 +24,18 @@ import android.widget.Toast
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
+import com.arash.altafi.chatgptsimple.BuildConfig
+import com.arash.altafi.chatgptsimple.R
 import com.arash.altafi.chatgptsimple.databinding.LayoutToastBinding
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import java.io.File
+import java.io.FileOutputStream
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
@@ -189,7 +198,7 @@ fun Context.copyTextToClipboard(textToCopy: String) {
     val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     val clipData = ClipData.newPlainText("text", textToCopy)
     clipboardManager.setPrimaryClip(clipData)
-    Toast.makeText(this, "Text copied", Toast.LENGTH_LONG).show()
+    toastCustom(getString(R.string.text_copied))
 }
 
 fun Context.shareContent(contentValue: String) {
@@ -201,6 +210,40 @@ fun Context.shareContent(contentValue: String) {
         contentValue
     )
     startActivity(Intent.createChooser(shareIntent, "Send to"))
+}
+
+fun Context.shareImage(
+    bitmap: Bitmap,
+    body: String = "",
+    title: String = "",
+    subject: String = ""
+) {
+    val file = File(externalCacheDir, System.currentTimeMillis().toString() + ".jpg")
+    val out = FileOutputStream(file)
+    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out)
+    out.close()
+    val bmpUri = if (Build.VERSION.SDK_INT < 24) {
+        Uri.fromFile(file)
+    } else {
+        FileProvider.getUriForFile(
+            this, "${BuildConfig.APPLICATION_ID}.fileprovider", file
+        )
+    }
+
+    val builder: StrictMode.VmPolicy.Builder = StrictMode.VmPolicy.Builder()
+    StrictMode.setVmPolicy(builder.build())
+
+    val sendIntent = Intent().apply {
+        action = Intent.ACTION_SEND
+        type = "image/*"
+//        putExtra(Intent.EXTRA_TEXT, title + "\n\n" + body)
+//        putExtra(Intent.EXTRA_TITLE, title)
+//        putExtra(Intent.EXTRA_SUBJECT, subject)
+        putExtra(Intent.EXTRA_STREAM, bmpUri)
+    }
+
+    val shareIntent = Intent.createChooser(sendIntent, "Share News")
+    startActivity(shareIntent)
 }
 
 fun <F> runAfter(

@@ -14,4 +14,5 @@
     <string name="network_down">لطفا از اتصال اینترنت خود اطمینان حاصل کنید.</string>
     <string name="successFully_deleted">با موفقیت حذف شد.</string>
     <string name="error_server">خطایی رخ داده است. لطفا مجددا ارسال کنید …</string>
+    <string name="text_copied">متن کپی شد.</string>
 </resources>
