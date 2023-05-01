@@ -68,9 +68,9 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideChatOkHttp(cache: Cache) = OkHttpClient.Builder()
-        .writeTimeout(10, TimeUnit.SECONDS)
-        .connectTimeout(10, TimeUnit.SECONDS)
-        .readTimeout(10, TimeUnit.SECONDS)
+        .writeTimeout(1, TimeUnit.MINUTES)
+        .connectTimeout(1, TimeUnit.MINUTES)
+        .readTimeout(1, TimeUnit.MINUTES)
         .retryOnConnectionFailure(true)
         .addInterceptor(SentryOkHttpInterceptor())
         .connectionSpecs(listOf(ConnectionSpec.COMPATIBLE_TLS))
@@ -95,9 +95,9 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideImageOkHttp(cache: Cache) = OkHttpClient.Builder()
-        .writeTimeout(10, TimeUnit.SECONDS)
-        .connectTimeout(10, TimeUnit.SECONDS)
-        .readTimeout(10, TimeUnit.SECONDS)
+        .writeTimeout(1, TimeUnit.MINUTES)
+        .connectTimeout(1, TimeUnit.MINUTES)
+        .readTimeout(1, TimeUnit.MINUTES)
         .retryOnConnectionFailure(true)
         .addInterceptor(SentryOkHttpInterceptor())
         .connectionSpecs(listOf(ConnectionSpec.COMPATIBLE_TLS))

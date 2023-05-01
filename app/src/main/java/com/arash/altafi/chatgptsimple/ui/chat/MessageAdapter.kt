@@ -80,7 +80,7 @@ class MessageAdapter(private var messageList: ArrayList<MessageEntityObjectBox>)
 //                    tvCopy.toShow()
 //                    tvShare.toShow()
                     progressTyping.toGone()
-                    tvLeftChat.text = item.message
+                    tvLeftChat.setText(item.message, true)
                 }
 
                 MessageState.TYPING.name -> {
