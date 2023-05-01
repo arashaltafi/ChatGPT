@@ -52,6 +52,7 @@ class ChatFragment : Fragment() {
     }
 
     private val args by navArgs<ChatFragmentArgs>()
+    private var dialogId = 0L
 
     private val dialogViewModel: DialogViewModel by viewModels()
     private val chatViewModel: ChatViewModel by viewModels()
@@ -110,7 +111,9 @@ class ChatFragment : Fragment() {
             dialogEntity!!.messages.forEach {
                 finalList.add(it)
             }
+            dialogId = dialogEntity.dialogId ?: -1L
         } else {
+            dialogId = getLastIdOfDB() + 1
             val messageEntityObjectBox = MessageEntityObjectBox()
             messageEntityObjectBox.message = getString(R.string.welcomeMessage)
             messageEntityObjectBox.sentBy = MessageState.BOT_TEXT.name
@@ -347,7 +350,7 @@ class ChatFragment : Fragment() {
 
         if (sentBy != MessageState.TYPING && sentBy != MessageState.SENDING_IMAGE) {
             val dialogEntity = DialogEntityObjectBox()
-            dialogEntity.dialogId = getLastIdOfDB()
+            dialogEntity.dialogId = dialogId
             dialogEntity.messages.addAll(finalList)
             dialogEntity.lastTime = System.currentTimeMillis()
             dialogViewModel.updateDialogObjectBox(dialogEntity)
