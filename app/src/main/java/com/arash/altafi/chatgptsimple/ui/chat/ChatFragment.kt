@@ -147,7 +147,8 @@ class ChatFragment : Fragment() {
 
         edtMessage.requestFocus()
 
-        messageAdapter = MessageAdapter(finalList)
+        messageAdapter = MessageAdapter()
+        messageAdapter.submitList(finalList)
         rvChat.adapter = messageAdapter
 
         messageAdapter.onClickImageListener = {
@@ -340,7 +341,7 @@ class ChatFragment : Fragment() {
         messageEntityObjectBox.sentBy = sentBy.name
         messageEntityObjectBox.time = PersianDate().getClockString()
         finalList.add(messageEntityObjectBox)
-
+        messageAdapter.submitList(finalList)
         messageAdapter.notifyDataSetChanged()
         binding.rvChat.smoothScrollToPosition(messageAdapter.itemCount)
 

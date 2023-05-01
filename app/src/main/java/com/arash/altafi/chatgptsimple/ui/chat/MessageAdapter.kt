@@ -10,7 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.view.GestureDetectorCompat
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.arash.altafi.chatgptsimple.R
 import com.arash.altafi.chatgptsimple.databinding.ItemImageRecevieBinding
@@ -25,13 +26,27 @@ import com.arash.altafi.chatgptsimple.ext.toGone
 import com.arash.altafi.chatgptsimple.ext.toShow
 import com.bumptech.glide.Glide
 
-class MessageAdapter(private var messageList: ArrayList<MessageEntityObjectBox>) :
-    RecyclerView.Adapter<ViewHolder>() {
+class MessageAdapter : ListAdapter<MessageEntityObjectBox, ViewHolder>(Companion) {
 
-    companion object {
+    companion object : DiffUtil.ItemCallback<MessageEntityObjectBox>() {
+        override fun areItemsTheSame(
+            oldItem: MessageEntityObjectBox,
+            newItem: MessageEntityObjectBox
+        ): Boolean {
+            return oldItem == newItem
+        }
+
+        @SuppressLint("DiffUtilEquals")
+        override fun areContentsTheSame(
+            oldItem: MessageEntityObjectBox,
+            newItem: MessageEntityObjectBox
+        ): Boolean {
+            return oldItem == newItem
+        }
+
         private const val VIEW_TYPE_MESSAGE_SENT = 1
-        private const val VIEW_TYPE_MESSAGE_RECEIVED = 2
         private const val VIEW_TYPE_IMAGE_RECEIVED = 3
+        private const val VIEW_TYPE_MESSAGE_RECEIVED = 2
     }
 
     var onClickImageListener: ((String) -> Unit)? = null
@@ -55,7 +70,7 @@ class MessageAdapter(private var messageList: ArrayList<MessageEntityObjectBox>)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = messageList[position]
+        val item = getItem(position)
         when (holder) {
             is MyReceiveTextViewHolder -> {
                 holder.bind(item)
@@ -71,10 +86,8 @@ class MessageAdapter(private var messageList: ArrayList<MessageEntityObjectBox>)
         }
     }
 
-    override fun getItemCount(): Int = messageList.size
-
     override fun getItemViewType(position: Int): Int {
-        return when (messageList[position].sentBy) {
+        return when (getItem(position).sentBy) {
             MessageState.ME.name -> VIEW_TYPE_MESSAGE_SENT
             MessageState.BOT_TEXT.name -> VIEW_TYPE_MESSAGE_RECEIVED
             MessageState.BOT_IMAGE.name -> VIEW_TYPE_IMAGE_RECEIVED
@@ -94,8 +107,6 @@ class MessageAdapter(private var messageList: ArrayList<MessageEntityObjectBox>)
                     ivCopy.toShow()
                     ivShare.toShow()
                     progressTyping.toGone()
-
-                    //TODO
                     tvLeftChat.text = item.message
                 }
 
