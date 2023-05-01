@@ -7,91 +7,91 @@
     android:layoutDirection="ltr"
     android:padding="8dp">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cvIn"
-        style="@style/card.messenger.incoming.message"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="80dp"
-        android:padding="8dp">
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="50dp">
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/llLeftChatView"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cvIn"
+            style="@style/card.messenger.incoming.message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true">
+            android:padding="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <com.arash.altafi.chatgptsimple.utils.TextViewJustify
-                android:id="@+id/tvLeftChat"
-                style="@style/txt.h2.medium"
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/llLeftChatView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="?attr/chatOnIncoming"
-                android:textIsSelectable="true"
-                tools:text="Arash Altafi" />
+                android:layout_alignParentStart="true">
 
-            <com.wang.avi.AVLoadingIndicatorView
-                android:id="@+id/progressTyping"
-                style="@style/AVLoadingIndicatorView.Small"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:indicatorColor="?attr/chatOnIncoming"
-                app:indicatorName="BallPulseIndicator"
-                tools:visibility="visible" />
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tvLeftChat"
+                    style="@style/txt.h2.medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:justificationMode="inter_word"
+                    android:textColor="?attr/chatOnIncoming"
+                    tools:text="Arash Altafi" />
 
-        </androidx.appcompat.widget.LinearLayoutCompat>
+                <com.wang.avi.AVLoadingIndicatorView
+                    android:id="@+id/progressTyping"
+                    style="@style/AVLoadingIndicatorView.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:indicatorColor="?attr/chatOnIncoming"
+                    app:indicatorName="BallPulseIndicator"
+                    tools:visibility="visible" />
 
-    </com.google.android.material.card.MaterialCardView>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tvTime"
-        style="@style/txt.h00"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/cvIn"
-        android:layout_marginTop="4dp"
-        android:lines="1"
-        android:maxLines="1"
-        android:padding="4dp"
-        android:singleLine="true"
-        android:textColor="?android:attr/textColorHint"
-        app:layout_constraintLeft_toLeftOf="@id/cvIn"
-        app:layout_constraintTop_toBottomOf="@id/cvIn"
-        tools:text="07:43 صبح" />
+        </com.google.android.material.card.MaterialCardView>
 
-    <!--<com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tvCopy"
-        style="@style/ClickableBorderlessStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/cvIn"
-        android:layout_toEndOf="@+id/tvTime"
-        android:layout_marginTop="4dp"
-        android:layout_marginStart="4dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:padding="4dp"
-        android:text="copy"
-        android:textColor="?android:attr/textColorHint"
-        android:visibility="gone"
-        tools:visibility="visible" />-->
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvTime"
+            style="@style/txt.h00"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:lines="1"
+            android:maxLines="1"
+            android:padding="4dp"
+            android:singleLine="true"
+            android:textColor="?android:attr/textColorHint"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cvIn"
+            tools:text="07:43 صبح" />
 
-    <!--<com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tvShare"
-        style="@style/ClickableBorderlessStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/cvIn"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:layout_toEndOf="@+id/tvCopy"
-        android:clickable="true"
-        android:focusable="true"
-        android:padding="4dp"
-        android:text="share"
-        android:textColor="?android:attr/textColorHint"
-        android:visibility="gone"
-        tools:visibility="visible" />-->
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivCopy"
+            android:layout_width="20dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_toEndOf="@+id/tvTime"
+            android:src="@drawable/baseline_content_copy_24"
+            app:layout_constraintBottom_toBottomOf="@id/tvTime"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintStart_toEndOf="@+id/tvTime"
+            app:layout_constraintTop_toTopOf="@+id/tvTime"
+            app:tint="?android:attr/textColorHint" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivShare"
+            android:layout_width="20dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_toEndOf="@+id/tvTime"
+            android:src="@drawable/baseline_share_24"
+            app:layout_constraintBottom_toBottomOf="@id/tvTime"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintStart_toEndOf="@+id/ivCopy"
+            app:layout_constraintTop_toTopOf="@+id/tvTime"
+            app:tint="?android:attr/textColorHint" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </RelativeLayout>

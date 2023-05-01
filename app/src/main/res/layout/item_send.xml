@@ -1,44 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layoutDirection="ltr"
     android:padding="8dp">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/llRightChatView"
-        style="@style/card.messenger.outcome.message"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="80dp"
-        android:padding="8dp">
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="2dp">
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tvRightChat"
-            style="@style/txt.h2.medium"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/llRightChatView"
+            style="@style/card.messenger.outcome.message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="?attr/chatOnOutcome"
-            tools:text="Arash Altafi" />
+            android:padding="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    </com.google.android.material.card.MaterialCardView>
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tvRightChat"
+                style="@style/txt.h2.medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="?attr/chatOnOutcome"
+                tools:text="Arash Altafi" />
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tvTime"
-        style="@style/txt.h00"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/llRightChatView"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:lines="1"
-        android:maxLines="1"
-        android:padding="4dp"
-        android:singleLine="true"
-        android:textColor="?android:attr/textColorHint"
-        tools:text="07:43 صبح" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvTime"
+            style="@style/txt.h00"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:lines="1"
+            android:maxLines="1"
+            android:padding="4dp"
+            android:singleLine="true"
+            android:textColor="?android:attr/textColorHint"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/llRightChatView"
+            tools:layout_editor_absoluteY="8dp"
+            tools:text="07:43 صبح" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivCopy"
+            android:layout_width="20dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="8dp"
+            android:layout_toEndOf="@+id/tvTime"
+            android:src="@drawable/baseline_content_copy_24"
+            app:layout_constraintBottom_toBottomOf="@id/tvTime"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toStartOf="@id/tvTime"
+            app:layout_constraintTop_toTopOf="@+id/tvTime"
+            app:tint="?android:attr/textColorHint" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivEdit"
+            android:layout_width="20dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="8dp"
+            android:layout_toEndOf="@+id/ivCopy"
+            android:src="@drawable/ic_edit"
+            app:layout_constraintBottom_toBottomOf="@id/ivCopy"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toStartOf="@id/ivCopy"
+            app:layout_constraintTop_toTopOf="@+id/ivCopy"
+            app:tint="?android:attr/textColorHint" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </RelativeLayout>

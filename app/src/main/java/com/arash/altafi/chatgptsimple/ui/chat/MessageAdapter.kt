@@ -2,6 +2,7 @@ package com.arash.altafi.chatgptsimple.ui.chat
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.arash.altafi.chatgptsimple.R
@@ -10,6 +11,9 @@ import com.arash.altafi.chatgptsimple.databinding.ItemSendBinding
 import com.arash.altafi.chatgptsimple.databinding.ItemTextRecevieBinding
 import com.arash.altafi.chatgptsimple.domain.model.chat.MessageState
 import com.arash.altafi.chatgptsimple.domain.provider.local.MessageEntityObjectBox
+import com.arash.altafi.chatgptsimple.ext.copyTextToClipboard
+import com.arash.altafi.chatgptsimple.ext.shareContent
+import com.arash.altafi.chatgptsimple.ext.shareImage
 import com.arash.altafi.chatgptsimple.ext.toGone
 import com.arash.altafi.chatgptsimple.ext.toShow
 import com.bumptech.glide.Glide
@@ -24,6 +28,7 @@ class MessageAdapter(private var messageList: ArrayList<MessageEntityObjectBox>)
     }
 
     var onClickImageListener: ((String) -> Unit)? = null
+    var onClickReplyListener: ((String) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return when (viewType) {
@@ -77,16 +82,18 @@ class MessageAdapter(private var messageList: ArrayList<MessageEntityObjectBox>)
             when (item.sentBy) {
                 MessageState.BOT_TEXT.name -> {
                     tvTime.toShow()
-//                    tvCopy.toShow()
-//                    tvShare.toShow()
+                    ivCopy.toShow()
+                    ivShare.toShow()
                     progressTyping.toGone()
-                    tvLeftChat.setText(item.message, true)
+
+                    //TODO
+                    tvLeftChat.text = item.message
                 }
 
                 MessageState.TYPING.name -> {
                     tvTime.toGone()
-//                    tvCopy.toGone()
-//                    tvShare.toGone()
+                    ivCopy.toGone()
+                    ivShare.toGone()
                     progressTyping.toShow()
                     tvLeftChat.text = ""
                 }
@@ -94,15 +101,20 @@ class MessageAdapter(private var messageList: ArrayList<MessageEntityObjectBox>)
                 else -> {}
             }
 
-            tvTime.text = item.time
-
-            /*tvCopy.setOnClickListener {
-                it.context.copyTextToClipboard(tvLeftChat.text.toString())
+            cvIn.setOnLongClickListener {
+                ivCopy.performClick()
+                true
             }
 
-            tvShare.setOnClickListener {
-                it.context.shareContent(tvLeftChat.text.toString())
-            }*/
+            tvTime.text = item.time
+
+            ivCopy.setOnClickListener {
+                it.context.copyTextToClipboard(item.message.toString())
+            }
+
+            ivShare.setOnClickListener {
+                it.context.shareContent(item.message.toString())
+            }
         }
     }
 
@@ -112,6 +124,7 @@ class MessageAdapter(private var messageList: ArrayList<MessageEntityObjectBox>)
             when (item.sentBy) {
                 MessageState.BOT_IMAGE.name -> {
                     tvTime.toShow()
+                    ivShare.toShow()
                     progressSendingImage.toGone()
                     Glide.with(root.context).load(item.message).into(ivImage)
                     ivImage.setOnClickListener {
@@ -121,6 +134,7 @@ class MessageAdapter(private var messageList: ArrayList<MessageEntityObjectBox>)
 
                 MessageState.SENDING_IMAGE.name -> {
                     tvTime.toGone()
+                    ivShare.toGone()
                     progressSendingImage.toShow()
                     Glide.with(root.context).load(R.color.transparent).into(ivImage)
                 }
@@ -129,6 +143,10 @@ class MessageAdapter(private var messageList: ArrayList<MessageEntityObjectBox>)
             }
 
             tvTime.text = item.time
+
+            ivShare.setOnClickListener {
+                it.context.shareImage(ivShare.drawable.toBitmap())
+            }
         }
     }
 
@@ -137,6 +155,19 @@ class MessageAdapter(private var messageList: ArrayList<MessageEntityObjectBox>)
         fun bind(item: MessageEntityObjectBox) = binding.apply {
             tvRightChat.text = item.message
             tvTime.text = item.time
+
+            llRightChatView.setOnLongClickListener {
+                ivCopy.performClick()
+                true
+            }
+
+            ivCopy.setOnClickListener {
+                it.context.copyTextToClipboard(item.message.toString())
+            }
+
+            ivEdit.setOnClickListener {
+                onClickReplyListener?.invoke(item.message.toString())
+            }
         }
     }
 }

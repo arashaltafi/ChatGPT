@@ -156,6 +156,10 @@ class ChatFragment : Fragment() {
             )
         }
 
+        messageAdapter.onClickReplyListener = {
+            edtMessage.setText(it)
+        }
+
         btnSend.setOnClickListener {
             if (checkNetWork()) {
                 val question = edtMessage.text.toString().trim()

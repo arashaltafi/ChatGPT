@@ -4,16 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginStart="2dp"
+    android:layout_marginEnd="50dp"
     android:layoutDirection="ltr"
     android:padding="8dp">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/ivImage"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
         android:layout_alignParentStart="true"
         android:padding="8dp"
         android:scaleType="fitCenter"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearance="@style/appearance.round.10"
@@ -40,15 +43,29 @@
         style="@style/txt.h00"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:lines="1"
         android:maxLines="1"
-        android:padding="8dp"
+        android:padding="4dp"
         android:singleLine="true"
         android:textColor="?android:attr/textColorHint"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ivImage"
         tools:layout_editor_absoluteY="8dp"
         tools:text="07:43 صبح" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/ivShare"
+        android:layout_width="20dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_toEndOf="@+id/tvTime"
+        android:src="@drawable/baseline_share_24"
+        app:layout_constraintBottom_toBottomOf="@id/tvTime"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintStart_toEndOf="@+id/tvTime"
+        app:layout_constraintTop_toTopOf="@+id/tvTime"
+        app:tint="?android:attr/textColorHint" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
