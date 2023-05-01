@@ -117,8 +117,7 @@ class DialogFragment : Fragment() {
                     )
                 }
             ),
-            Gravity.BOTTOM.or(Gravity.END),
-            setTint = false
+            Gravity.BOTTOM.or(Gravity.END)
         )
     }
 
@@ -160,8 +159,7 @@ class DialogFragment : Fragment() {
                     })
                 }
             ),
-            Gravity.BOTTOM.or(Gravity.END),
-            setTint = false
+            Gravity.BOTTOM.or(Gravity.END)
         )
     }
 

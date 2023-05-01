@@ -155,12 +155,6 @@ dependencies {
     implementation "jp.wasabeef:glide-transformations:4.3.0"
     kapt "com.github.bumptech.glide:compiler:4.15.0"
 
-    //Room
-    implementation "androidx.room:room-runtime:2.5.1"
-    annotationProcessor "androidx.room:room-compiler:2.5.1"
-    kapt "androidx.room:room-compiler:2.5.1"
-    implementation "androidx.room:room-ktx:2.5.1"
-
     //ObjectBox
     implementation "io.objectbox:objectbox-kotlin:3.5.1"
     kapt "io.objectbox:objectbox-processor:3.5.1"

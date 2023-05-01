@@ -15,4 +15,6 @@
     <string name="successFully_deleted">با موفقیت حذف شد.</string>
     <string name="error_server">خطایی رخ داده است. لطفا مجددا ارسال کنید …</string>
     <string name="text_copied">متن کپی شد.</string>
+    <string name="copy">کپی</string>
+    <string name="share">به اشتراک گذاری</string>
 </resources>

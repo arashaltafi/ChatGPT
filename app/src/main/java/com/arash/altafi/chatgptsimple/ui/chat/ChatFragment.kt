@@ -2,7 +2,9 @@ package com.arash.altafi.chatgptsimple.ui.chat
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.Point
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
@@ -160,6 +162,10 @@ class ChatFragment : Fragment() {
             edtMessage.setText(it)
         }
 
+        messageAdapter.onLongClickListener = { view, point, item, bitmap ->
+            popupWindowAdapter(view, point, item, bitmap)
+        }
+
         btnSend.setOnClickListener {
             if (checkNetWork()) {
                 val question = edtMessage.text.toString().trim()
@@ -279,8 +285,39 @@ class ChatFragment : Fragment() {
         PopupUtil.showPopup(
             view,
             list,
-            Gravity.BOTTOM.or(Gravity.END),
-            setTint = false
+            Gravity.BOTTOM.or(Gravity.END)
+        )
+    }
+
+    private fun popupWindowAdapter(
+        view: View,
+        point: Point,
+        item: MessageEntityObjectBox,
+        bitmap: Bitmap? = null
+    ) {
+        val list = mutableListOf(
+            PopupUtil.PopupItem(
+                R.drawable.baseline_content_copy_24,
+                getString(R.string.copy)
+            ) {
+                requireContext().copyTextToClipboard(item.message.toString())
+            },
+            PopupUtil.PopupItem(
+                R.drawable.baseline_share_24,
+                getString(R.string.share)
+            ) {
+                bitmap?.let {
+                    requireContext().shareImage(it)
+                } ?: kotlin.run {
+                    requireContext().shareContent(item.message.toString())
+                }
+            }
+        )
+
+        PopupUtil.showPopup(
+            view,
+            list,
+            point
         )
     }
 

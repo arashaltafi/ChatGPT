@@ -32,10 +32,11 @@
                     android:id="@+id/ivAvatar"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_marginEnd="8dp"
                     android:padding="2dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintDimensionRatio="1:1"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:shapeAppearance="@style/appearance.round.50"
                     app:srcCompat="@drawable/robot"
@@ -48,33 +49,33 @@
                     android:layout_height="8dp"
                     android:layout_margin="4dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/ivAvatar"
+                    app:layout_constraintStart_toStartOf="@id/ivAvatar"
                     app:shapeAppearance="@style/appearance.round.50"
                     app:srcCompat="@drawable/background_status" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tvToolbarTitle"
+                    style="@style/txt.h2.bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
                     android:text="@string/app_name"
-                    style="@style/txt.h2.bold"
                     android:textColor="@color/white"
-                    app:layout_constraintStart_toEndOf="@+id/ivAvatar"
+                    app:layout_constraintEnd_toStartOf="@id/ivAvatar"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tvToolbarState"
+                    style="@style/txt.h00.medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
                     android:text="@string/typing"
                     android:textColor="@color/white"
                     android:textStyle="italic"
-                    style="@style/txt.h00.medium"
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/ivAvatar"
+                    app:layout_constraintEnd_toStartOf="@id/ivAvatar"
                     app:layout_constraintTop_toBottomOf="@+id/tvToolbarTitle"
                     tools:visibility="visible" />
 
@@ -87,7 +88,7 @@
                     android:clickable="true"
                     android:focusable="true"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_baseline_more_vert_24" />
 
@@ -128,13 +129,13 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edtMessage"
+                style="@style/txt.h1.light"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_toStartOf="@id/btnSend"
                 android:background="@drawable/rounded_corner"
                 android:hint="@string/edt_hint"
-                style="@style/txt.h1.light"
                 android:imeOptions="actionSend"
                 android:inputType="textMultiLine|text"
                 android:maxLength="150"

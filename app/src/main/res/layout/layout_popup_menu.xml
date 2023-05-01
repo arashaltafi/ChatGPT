@@ -24,7 +24,7 @@
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tvItemPopupMenu"
-                style="@style/txt.h00"
+                style="@style/txt.h00.medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawablePadding="16dp"

@@ -1,8 +1,15 @@
 package com.arash.altafi.chatgptsimple.ui.chat
 
+import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.graphics.Point
+import android.view.GestureDetector
 import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.view.GestureDetectorCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.arash.altafi.chatgptsimple.R
@@ -29,6 +36,7 @@ class MessageAdapter(private var messageList: ArrayList<MessageEntityObjectBox>)
 
     var onClickImageListener: ((String) -> Unit)? = null
     var onClickReplyListener: ((String) -> Unit)? = null
+    var onLongClickListener: ((View, Point, MessageEntityObjectBox, Bitmap?) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return when (viewType) {
@@ -78,6 +86,7 @@ class MessageAdapter(private var messageList: ArrayList<MessageEntityObjectBox>)
 
     inner class MyReceiveTextViewHolder(private val binding: ItemTextRecevieBinding) :
         ViewHolder(binding.root) {
+        @SuppressLint("ClickableViewAccessibility")
         fun bind(item: MessageEntityObjectBox) = binding.apply {
             when (item.sentBy) {
                 MessageState.BOT_TEXT.name -> {
@@ -115,11 +124,39 @@ class MessageAdapter(private var messageList: ArrayList<MessageEntityObjectBox>)
             ivShare.setOnClickListener {
                 it.context.shareContent(item.message.toString())
             }
+
+            val gestureDetector = GestureDetectorCompat(root.context, object :
+                GestureDetector.SimpleOnGestureListener() {
+                override fun onDown(e: MotionEvent): Boolean {
+                    return true
+                }
+
+                override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+                    return true
+                }
+
+                override fun onLongPress(e: MotionEvent) {
+                    onLongClickListener?.invoke(
+                        root,
+                        Point(e.rawX.toInt(), e.rawY.toInt()),
+                        item,
+                        null
+                    )
+                }
+            })
+
+            root.setOnTouchListener { v, event ->
+                if (event.action == MotionEvent.ACTION_BUTTON_RELEASE)
+                    v.performClick()
+
+                return@setOnTouchListener gestureDetector.onTouchEvent(event)
+            }
         }
     }
 
     inner class MyReceiveImageViewHolder(private val binding: ItemImageRecevieBinding) :
         ViewHolder(binding.root) {
+        @SuppressLint("ClickableViewAccessibility")
         fun bind(item: MessageEntityObjectBox) = binding.apply {
             when (item.sentBy) {
                 MessageState.BOT_IMAGE.name -> {
@@ -147,11 +184,39 @@ class MessageAdapter(private var messageList: ArrayList<MessageEntityObjectBox>)
             ivShare.setOnClickListener {
                 it.context.shareImage(ivShare.drawable.toBitmap())
             }
+
+            val gestureDetector = GestureDetectorCompat(root.context, object :
+                GestureDetector.SimpleOnGestureListener() {
+                override fun onDown(e: MotionEvent): Boolean {
+                    return true
+                }
+
+                override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+                    return true
+                }
+
+                override fun onLongPress(e: MotionEvent) {
+                    onLongClickListener?.invoke(
+                        root,
+                        Point(e.rawX.toInt(), e.rawY.toInt()),
+                        item,
+                        ivShare.drawable.toBitmap()
+                    )
+                }
+            })
+
+            root.setOnTouchListener { v, event ->
+                if (event.action == MotionEvent.ACTION_BUTTON_RELEASE)
+                    v.performClick()
+
+                return@setOnTouchListener gestureDetector.onTouchEvent(event)
+            }
         }
     }
 
     inner class MySendViewHolder(private val binding: ItemSendBinding) :
         ViewHolder(binding.root) {
+        @SuppressLint("ClickableViewAccessibility")
         fun bind(item: MessageEntityObjectBox) = binding.apply {
             tvRightChat.text = item.message
             tvTime.text = item.time
@@ -167,6 +232,33 @@ class MessageAdapter(private var messageList: ArrayList<MessageEntityObjectBox>)
 
             ivEdit.setOnClickListener {
                 onClickReplyListener?.invoke(item.message.toString())
+            }
+
+            val gestureDetector = GestureDetectorCompat(root.context, object :
+                GestureDetector.SimpleOnGestureListener() {
+                override fun onDown(e: MotionEvent): Boolean {
+                    return true
+                }
+
+                override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+                    return true
+                }
+
+                override fun onLongPress(e: MotionEvent) {
+                    onLongClickListener?.invoke(
+                        root,
+                        Point(e.rawX.toInt(), e.rawY.toInt()),
+                        item,
+                        null
+                    )
+                }
+            })
+
+            root.setOnTouchListener { v, event ->
+                if (event.action == MotionEvent.ACTION_BUTTON_RELEASE)
+                    v.performClick()
+
+                return@setOnTouchListener gestureDetector.onTouchEvent(event)
             }
         }
     }
