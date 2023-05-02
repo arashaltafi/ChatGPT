@@ -47,7 +47,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/llRightChatView"
             tools:layout_editor_absoluteY="8dp"
-            tools:text="07:43 صبح" />
+            tools:text="07:43" />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/ivCopy"

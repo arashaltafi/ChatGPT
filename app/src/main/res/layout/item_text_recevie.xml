@@ -64,7 +64,7 @@
             android:textColor="?android:attr/textColorHint"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cvIn"
-            tools:text="07:43 صبح" />
+            tools:text="07:43" />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/ivCopy"

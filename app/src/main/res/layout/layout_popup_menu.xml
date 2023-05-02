@@ -32,7 +32,7 @@
                 android:visibility="gone"
                 app:drawableTint="?android:attr/textColorHint"
                 tools:drawableStartCompat="@drawable/ic_delete"
-                tools:text="پاک کردن گفتگو"
+                tools:text="@string/delete"
                 tools:visibility="visible" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>

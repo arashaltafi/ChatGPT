@@ -22,49 +22,13 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "OPENAI_URL", '"https://api.openai.com/"')
-        buildConfigField("String", "TOKEN", '"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"')
-    }
-
-    signingConfigs {
-        debug {
-            keyAlias 'Arash'
-            keyPassword '**********'
-            storeFile rootProject.file("app/ArashAltafiAndroid.jks")
-            storePassword '*******'
-            v1SigningEnabled true
-            v2SigningEnabled true
-        }
-        release {
-            keyAlias 'Arash'
-            keyPassword '*******'
-            storeFile rootProject.file("app/ArashAltafiAndroid.jks")
-            storePassword '*******'
-            v1SigningEnabled true
-            v2SigningEnabled true
-        }
+        buildConfigField("String", "TOKEN", '"Your Token"')
     }
 
     buildTypes {
         release {
-            signingConfig signingConfigs.release
-            debuggable false
-            crunchPngs true
-            minifyEnabled true
-            shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            multiDexKeepProguard file('multidex-config.pro')
-            ndk { abiFilters "armeabi-v7a", "arm64-v8a" }
-        }
-        debug {
-            signingConfig signingConfigs.debug
-            versionNameSuffix "-debug"
-            applicationIdSuffix ".debug"
-            debuggable true
-            crunchPngs false
             minifyEnabled false
-            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            ndk { abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64" }
         }
     }
 

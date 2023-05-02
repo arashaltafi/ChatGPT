@@ -1,6 +1,5 @@
 package com.arash.altafi.chatgptsimple.ui.splash
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -9,8 +8,11 @@ import com.arash.altafi.chatgptsimple.BuildConfig
 import com.arash.altafi.chatgptsimple.databinding.ActivitySplashBinding
 import com.arash.altafi.chatgptsimple.ui.main.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-@SuppressLint("CustomSplashScreen")
 @AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
 
@@ -22,18 +24,17 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        window.statusBarColor = Color.TRANSPARENT
-
         init()
     }
 
     private fun init() = binding.apply {
         tvAppVersion.text = BuildConfig.VERSION_NAME
 
-        root.postDelayed({
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(3000)
             startActivity(Intent(this@SplashActivity, MainActivity::class.java))
             finish()
-        }, 4000)
+        }
     }
 
 }
