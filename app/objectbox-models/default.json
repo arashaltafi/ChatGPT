@@ -1,0 +1,104 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:5068861621017274399",
+      "lastPropertyId": "11:6131080558014565656",
+      "name": "DialogEntityObjectBox",
+      "properties": [
+        {
+          "id": "1:6508085224512967458",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "6:2037900002110369870",
+          "name": "dialogId",
+          "indexId": "2:3752093009835164126",
+          "type": 6,
+          "flags": 32808
+        },
+        {
+          "id": "11:6131080558014565656",
+          "name": "lastTime",
+          "type": 6
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "4:2984618209026480742",
+      "lastPropertyId": "5:1234029972119786299",
+      "name": "MessageEntityObjectBox",
+      "properties": [
+        {
+          "id": "1:198731490820709036",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:5141407081790076192",
+          "name": "message",
+          "type": 9
+        },
+        {
+          "id": "3:8422059883098747727",
+          "name": "sentBy",
+          "type": 9
+        },
+        {
+          "id": "4:8963447728455608712",
+          "name": "time",
+          "type": 9
+        },
+        {
+          "id": "5:1234029972119786299",
+          "name": "dialogId",
+          "indexId": "4:3834384455245511136",
+          "type": 11,
+          "flags": 520,
+          "relationTarget": "DialogEntityObjectBox"
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "4:2984618209026480742",
+  "lastIndexId": "4:3834384455245511136",
+  "lastRelationId": "3:6645943858943753057",
+  "lastSequenceId": "0:0",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [
+    7117805896386476751,
+    802077155447602352
+  ],
+  "retiredIndexUids": [
+    4865735084520471881,
+    4503778473377718842
+  ],
+  "retiredPropertyUids": [
+    3967446958116700366,
+    7895599077118232634,
+    8329479971647448800,
+    4624438066243884172,
+    6338828741362004567,
+    349963457994227215,
+    3198144579094122248,
+    2527853943330981501,
+    1674704931205505573,
+    1541496147603785721,
+    5935176410552062536,
+    3807587455961768830
+  ],
+  "retiredRelationUids": [
+    8948266218876899589,
+    6858384181051504940,
+    6645943858943753057
+  ],
+  "version": 1
+}

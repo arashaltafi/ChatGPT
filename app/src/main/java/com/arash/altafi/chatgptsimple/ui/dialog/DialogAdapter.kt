@@ -4,14 +4,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.arash.altafi.chatgptsimple.data.local.DialogEntity
+import com.arash.altafi.chatgptsimple.R
 import com.arash.altafi.chatgptsimple.databinding.DialogItemBinding
+import com.arash.altafi.chatgptsimple.domain.model.chat.MessageState
+import com.arash.altafi.chatgptsimple.domain.provider.local.DialogEntityObjectBox
+import com.arash.altafi.chatgptsimple.ext.getDateClassifiedByDayMothYear
+import saman.zamani.persiandate.PersianDate
 
-class DialogAdapter(private var dialogList: ArrayList<DialogEntity>) :
+class DialogAdapter(private var dialogList: ArrayList<DialogEntityObjectBox>) :
     RecyclerView.Adapter<DialogAdapter.ViewHolder>() {
 
-    var onLongClickListener: ((View, DialogEntity) -> Unit)? = null
-    var onClickListener: ((DialogEntity) -> Unit)? = null
+    var onLongClickListener: ((View, DialogEntityObjectBox) -> Unit)? = null
+    var onClickListener: ((DialogEntityObjectBox) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = DialogItemBinding.inflate(LayoutInflater.from(parent.context))
@@ -27,7 +31,7 @@ class DialogAdapter(private var dialogList: ArrayList<DialogEntity>) :
     inner class ViewHolder(private val binding: DialogItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(dialogModel: DialogEntity) = binding.apply {
+        fun bind(dialogModel: DialogEntityObjectBox) = binding.apply {
             root.setOnLongClickListener {
                 onLongClickListener?.invoke(it, dialogModel)
                 true
@@ -37,8 +41,16 @@ class DialogAdapter(private var dialogList: ArrayList<DialogEntity>) :
                 onClickListener?.invoke(dialogModel)
             }
 
-            tvTitle.text = dialogModel.message
-            tvBadge.text = dialogModel.messageCount.toString()
+            tvTitle.text =
+                if (dialogModel.messages.lastOrNull()?.sentBy == MessageState.BOT_IMAGE.name)
+                    root.context.getString(R.string.image)
+                else
+                    dialogModel.messages.lastOrNull()?.message.toString()
+            tvBadge.text = dialogModel.messages.count().toString()
+
+            val time = dialogModel.lastTime ?: System.currentTimeMillis()
+            tvTime.text = PersianDate(time).getDateClassifiedByDayMothYear()
+
         }
     }
 

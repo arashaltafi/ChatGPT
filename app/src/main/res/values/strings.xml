@@ -1,7 +1,20 @@
 <resources>
-    <string name="app_name">ChatGPT Simple</string>
+    <string name="app_name">Chat GPT</string>
+    <string name="image">Image</string>
     <string name="connecting">Connecting …</string>
-    <string name="gpt_image">GPT Image</string>
+    <string name="gpt_image">Image Generator</string>
     <string name="delete">Delete Dialog</string>
     <string name="back">Back</string>
+    <string name="typing">Is Typing …</string>
+    <string name="sending_image">Sending Image …</string>
+    <string name="edt_hint">Writing …</string>
+    <string name="welcomeMessage">Hello, how can I help you today?</string>
+    <string name="generate_image">Generate</string>
+    <string name="please_fill_type">Please Type AnyTing</string>
+    <string name="network_down">Please ensure your internet connection.</string>
+    <string name="successFully_deleted">Removed Successfully.</string>
+    <string name="error_server">An error has occurred. Please resend …</string>
+    <string name="text_copied">The text was copied.</string>
+    <string name="copy">Copy</string>
+    <string name="share">Share</string>
 </resources>

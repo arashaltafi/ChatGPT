@@ -7,14 +7,17 @@ import android.view.*
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import androidx.annotation.DrawableRes
+import androidx.annotation.Keep
 import androidx.core.view.ViewCompat
 import com.arash.altafi.chatgptsimple.R
 import com.arash.altafi.chatgptsimple.databinding.LayoutPopupMenuBinding
+import com.arash.altafi.chatgptsimple.ext.getScreenHeight
+import com.arash.altafi.chatgptsimple.ext.getScreenWidth
+import com.arash.altafi.chatgptsimple.ext.setDrawableStart
+import com.arash.altafi.chatgptsimple.ext.toPx
 import com.google.android.material.textview.MaterialTextView
 
 object PopupUtil {
-
-    var setTint: Boolean = true
 
     private fun preparePopup(context: Context, popupItem: List<PopupItem>): PopupWindow {
         val layoutInflater =
@@ -62,9 +65,9 @@ object PopupUtil {
                         LinearLayout.LayoutParams.WRAP_CONTENT
                     ).apply {
                         setPadding(
-                            16.toPx(),
+                            8.toPx(),
                             if (index == 0) 16.toPx() else 4.toPx(),
-                            16.toPx(),
+                            8.toPx(),
                             if (index == popupItem.lastIndex) 16.toPx() else 4.toPx(),
                         )
                     }
@@ -72,11 +75,6 @@ object PopupUtil {
                     ViewCompat.setLayoutDirection(this, ViewCompat.LAYOUT_DIRECTION_LOCALE)
 
                     setDrawableStart(item.icon)
-
-                    if (setTint)
-                        compoundDrawables.forEach {
-                            it?.setTint(context.getAttrColor(android.R.attr.textColorHint))
-                        }
 
                     val outValue = TypedValue()
                     context.theme.resolveAttribute(
@@ -101,7 +99,8 @@ object PopupUtil {
         val container = popupWindow.contentView.rootView
         val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val p = container.layoutParams as WindowManager.LayoutParams
-        p.flags = p.flags or WindowManager.LayoutParams.FLAG_DIM_BEHIND
+        p.flags =
+            p.flags or WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM or WindowManager.LayoutParams.FLAG_DIM_BEHIND
 //    p.screenBrightness = 0.1f.also { p.dimAmount = it }
         p.dimAmount = 0.2f
         wm.updateViewLayout(container, p)
@@ -143,10 +142,8 @@ object PopupUtil {
         }
     }
 
-    fun showPopup(onView: View, popupItem: List<PopupItem>, gravity: Int, setTint: Boolean = true) {
+    fun showPopup(onView: View, popupItem: List<PopupItem>, gravity: Int) {
         val context = onView.context
-
-        PopupUtil.setTint = setTint
 
         preparePopup(context, popupItem).apply {
             showAsDropDown(onView, 0, 0, gravity)
@@ -155,6 +152,7 @@ object PopupUtil {
         }
     }
 
+    @Keep
     data class PopupItem(
         @DrawableRes
         val icon: Int,

@@ -24,7 +24,7 @@
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tvItemPopupMenu"
-                style="@style/txt.h00"
+                style="@style/txt.h00.medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawablePadding="16dp"
@@ -32,7 +32,7 @@
                 android:visibility="gone"
                 app:drawableTint="?android:attr/textColorHint"
                 tools:drawableStartCompat="@drawable/ic_delete"
-                tools:text="پاک کردن گفتگو"
+                tools:text="@string/delete"
                 tools:visibility="visible" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
