@@ -8,7 +8,7 @@ Set Your Api Key in build.gradle
   src="/screen_shot/1.png"
   alt="Screen Shot 1"
   title="Screen Shot 1"
-  style="display: inline-block; margin: 0 auto; height: 480px; width: 640px">
+  style="display: inline-block; margin: 0 auto; height: 640px; width: 480px">
 
 
 <img
